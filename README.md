@@ -7,47 +7,39 @@ The goal of this project is to create a music-specific chatbot that is able to a
 * Langchain tutorial [https://github.com/maximoskp/LangChain_tutorial]
 * Music4all dataset [https://sites.google.com/view/contact4music4all]
 
-## MP2.G1 
+## MP2.G1 Knowledge Graph, Architecture 
+
 
 * Vansh Vekaria (vekariyavansh@gmail.com)
 * Aishwarya Pujitha (aishwarya.pujitha@gmail.com) 
 
-Knowledge Graph, Architecture 
 
-## MP2.G2 
+## MP2.G2 Recommender, Steerable playlist 
+
 * Thomas Pietrovito (thomhplatt@gmail.com)
 * Noah Hicks (noahhicks2001@gmail.com)
 
-Recommender, Steerable playlist 
-
-## MP2.G3: 
-
-Integrating with beat trackers, tempo related queries 
+## MP2.G3: Integrating with beat trackers, tempo related queries 
 
 * Robert Widjaja (robertwinstonwidjaja@uvic.ca)
 * Apoorva Chadda (apoorva.rampal.2023@gmail.com)
 * Bharath Irukulapati (bharath.irukulapati@gmail.com)
 
-## MP2.G4:  
-
-Artist classifier, similarity 
+## MP2.G4: Artist classifier, similarity 
 
 * Kevin Zhu (kaiwenzhu@uvic.ca )
 * Liam Leibel (lnleibel@outlook.com)
 * Navdeep Saroha(nsaroha@uvic.ca)
 
 
-## MP2.G5: 
-
-Lyrics classification, search 
+## MP2.G5: Lyrics classification, search 
 
 * Quinn Foster (quinnjfoster@gmail.com)
 * Evidence obojade(kikipretty07@gmail.com)
 * Maria Malini Anthony (maria.malini234@gmail.com)
 
 
-## MP2.G6 
-Constrastive learning, genre classification and auto-tagging 
+## MP2.G6 Constrastive learning, genre classification and auto-tagging 
 
 * Newsha Bahardoost (newshabahardoost@uvic.ca)
 * Aman Monga (aman260@outlook.com)
