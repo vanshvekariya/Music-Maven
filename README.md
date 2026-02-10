@@ -9,14 +9,14 @@ The goal of this project is to create a music-specific chatbot that is able to a
 
 ## MP2.G1 
 
-Vansh Vekaria (vekariyavansh@gmail.com)
-Aishwarya Pujitha (aishwarya.pujitha@gmail.com) 
+* Vansh Vekaria (vekariyavansh@gmail.com)
+* Aishwarya Pujitha (aishwarya.pujitha@gmail.com) 
 
 Knowledge Graph, Architecture 
 
 ## MP2.G2 
-MP2.G2 Thomas Pietrovito (thomhplatt@gmail.com)
-Noah Hicks (noahhicks2001@gmail.com)
+* Thomas Pietrovito (thomhplatt@gmail.com)
+* Noah Hicks (noahhicks2001@gmail.com)
 
 Recommender, Steerable playlist 
 
@@ -24,17 +24,17 @@ Recommender, Steerable playlist
 
 Integrating with beat trackers, tempo related queries 
 
-Robert Widjaja (robertwinstonwidjaja@uvic.ca)
-Apoorva Chadda (apoorva.rampal.2023@gmail.com)
-Bharath Irukulapati (bharath.irukulapati@gmail.com)
+* Robert Widjaja (robertwinstonwidjaja@uvic.ca)
+* Apoorva Chadda (apoorva.rampal.2023@gmail.com)
+* Bharath Irukulapati (bharath.irukulapati@gmail.com)
 
 ## MP2.G4:  
 
 Artist classifier, similarity 
 
-Kevin Zhu (kaiwenzhu@uvic.ca )
-Liam Leibel (lnleibel@outlook.com)
-Navdeep Saroha(nsaroha@uvic.ca)
+* Kevin Zhu (kaiwenzhu@uvic.ca )
+* Liam Leibel (lnleibel@outlook.com)
+* Navdeep Saroha(nsaroha@uvic.ca)
 
 
 ## MP2.G5: 
