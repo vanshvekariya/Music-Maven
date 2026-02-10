@@ -69,11 +69,11 @@ Boolean Query:
 	User: k=100, (valence & tempo) & !year:1945-1970 & !genre:jazz
 
 **Milestone 5 – Evaluation & Refactoring (Due 2026-03-17)**
-/
+\
 This time will be used to evaluate our current progress, iterate, refactor, and test. If time permits, begin exploring how to link for Natural Language Processing and converting user input to JSON structured query.
 
 **Milestone 6 – Link to LLM (Due 2026-03-31)**
-/
+\
 Determine how to integrate our work into the Music Maven – ideally with NLP. Have the LLM process human input and return a structured JSON query. Map keywords such as “vibe” to features such as Dancibility, Energy and Valence, and favour their weights in the search.
 
 Future Work
