@@ -36,12 +36,13 @@ Genres
 Milestone 3 – Similarity Search (Due 2026-03-03)
 Given a single seed song tuple, write an algorithm that uses a Weighted Euclidean Search to determine which other songs in the dataset contain the most similar numeric attributes. The formula for Weighted Euclidean Search is given by:
 
-\begin{equation}
+$$
 d(\mathbf{x}, \mathbf{y}) =
 \sqrt{
 \sum_{i=1}^{N}
 w_i \left(x_i - y_i\right)^2
 }
+$$
 
 Milestone 4 – Query Structure, K-Nearest Songs (Due 2026-03-10)
 Define a query language that allows the user to set constraints. This will most likely be done using a JSON query, as it will be the most extensible for NLP and linking to an LLM in the future. Other possible query structures include a Boolean Query, an EBNF Grammar, or a basic constraint list. 
