@@ -14,10 +14,12 @@ Lastly, research will need to be conducted on similarity measures that can be us
 Following initial implementation, we propose that this system provides the needed foundation for integration with the additional subsections, providing a robust and effective recommender. 
 
 # Timeline & Objectives
-Milestone 1 – Import Dataset, Initialize Repositories (Due 2026-02-17)
+**Milestone 1 – Import Dataset, Initialize Repositories (Due 2026-02-17)**
+\
 Music Maven will be using the music4all (M4A) dataset. The first goal is to obtain a copy of the dataset – either locally or shared. Ideally, we will obtain a copy of just the dataset labels (without audio) for local testing and training. We will also create branches from the main and ensure we are able to safely push and pull.
 
-Milestone 2 – Preprocessing & Basic Queries (Due 2026-02-24)
+**Milestone 2 – Preprocessing & Basic Queries (Due 2026-02-24)**
+\
 Ensure the M4A dataset is adequate for a similarity search. That is, removing unneeded features, scaling numeric values and encoding categories. The pruned and processed dataset will be used for any training and querying. We can also begin to query the dataset using basic Pandas Dataframe functions.
 
 MIR Features in M4A
@@ -33,7 +35,8 @@ Album Name
 Release Date
 Genres
 
-Milestone 3 – Similarity Search (Due 2026-03-03)
+**Milestone 3 – Similarity Search (Due 2026-03-03)**
+\
 Given a single seed song tuple, write an algorithm that uses a Weighted Euclidean Search to determine which other songs in the dataset contain the most similar numeric attributes. The formula for Weighted Euclidean Search is given by:
 
 $$
@@ -44,7 +47,8 @@ w_i \left(x_i - y_i\right)^2
 }
 $$
 
-Milestone 4 – Query Structure, K-Nearest Songs (Due 2026-03-10)
+**Milestone 4 – Query Structure, K-Nearest Songs (Due 2026-03-10)**
+\
 Define a query language that allows the user to set constraints. This will most likely be done using a JSON query, as it will be the most extensible for NLP and linking to an LLM in the future. Other possible query structures include a Boolean Query, an EBNF Grammar, or a basic constraint list. 
 
 JSON query:
@@ -64,10 +68,12 @@ match = valence, tempo
 Boolean Query:
 	User: k=100, (valence & tempo) & !year:1945-1970 & !genre:jazz
 
-Milestone 5 – Evaluation & Refactoring (Due 2026-03-17)
+**Milestone 5 – Evaluation & Refactoring (Due 2026-03-17)**
+/
 This time will be used to evaluate our current progress, iterate, refactor, and test. If time permits, begin exploring how to link for Natural Language Processing and converting user input to JSON structured query.
 
-Milestone 6 – Link to LLM (Due 2026-03-31)
+**Milestone 6 – Link to LLM (Due 2026-03-31)**
+/
 Determine how to integrate our work into the Music Maven – ideally with NLP. Have the LLM process human input and return a structured JSON query. Map keywords such as “vibe” to features such as Dancibility, Energy and Valence, and favour their weights in the search.
 
 Future Work
