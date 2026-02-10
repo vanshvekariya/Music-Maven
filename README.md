@@ -7,4 +7,21 @@ The goal of this project is to create a music-specific chatbot that is able to a
 * Langchain tutorial [https://github.com/maximoskp/LangChain_tutorial]
 * Music4all dataset [https://sites.google.com/view/contact4music4all]
 
+
+## MP2.G1 
+
+Vansh Vekaria (vekariyavansh@gmail.com), Aishwarya Pujitha (aishwarya.pujitha@gmail.com) - Knowledge Graph, Architecture 
+
+## MP2.G2 
+MP2.G2 Thomas Pietrovito (thomhplatt@gmail.com), Noah Hicks (noahhicks2001@gmail.com) - Recommender, 
+Steerable playlist 
+
+## MP2.G3: 
+
+## MP2.G4:  
+
+## MP2.G5: 
+
+
+
  
