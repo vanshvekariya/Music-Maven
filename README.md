@@ -10,11 +10,16 @@ The goal of this project is to create a music-specific chatbot that is able to a
 
 ## MP2.G1 
 
-Vansh Vekaria (vekariyavansh@gmail.com), Aishwarya Pujitha (aishwarya.pujitha@gmail.com) - Knowledge Graph, Architecture 
+Vansh Vekaria (vekariyavansh@gmail.com)
+Aishwarya Pujitha (aishwarya.pujitha@gmail.com) 
+
+Knowledge Graph, Architecture 
 
 ## MP2.G2 
-MP2.G2 Thomas Pietrovito (thomhplatt@gmail.com), Noah Hicks (noahhicks2001@gmail.com) - Recommender, 
-Steerable playlist 
+MP2.G2 Thomas Pietrovito (thomhplatt@gmail.com)
+Noah Hicks (noahhicks2001@gmail.com)
+
+Recommender, Steerable playlist 
 
 ## MP2.G3: 
 
