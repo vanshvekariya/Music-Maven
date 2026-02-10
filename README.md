@@ -41,12 +41,19 @@ Artist classifier, similarity
 
 Lyrics classification, search 
 
-Quinn Foster (quinnjfoster@gmail.com)
-Aishwarya Pujitha (aishwarya.pujitha@gmail.com) 
-Evidence obojade(kikipretty07@gmail.com)
+* Quinn Foster (quinnjfoster@gmail.com)
+* Evidence obojade(kikipretty07@gmail.com)
+* Maria Malini Anthony (maria.malini234@gmail.com)
 
 
 ## MP2.G6 
+Constrastive learning, genre classification and auto-tagging 
+
+* Newsha Bahardoost (newshabahardoost@uvic.ca)
+* Aman Monga (aman260@outlook.com)
+* Kevin Nguyen (kevin.nguyenkhang68@gmail.com)
+
+
 
 
 
