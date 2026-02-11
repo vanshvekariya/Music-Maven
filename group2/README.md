@@ -7,7 +7,7 @@ In order to facilitate this, implementation of this system will be broken into t
 
 The first of these will likely be handled through use of a JSON query with fields corresponding to: 1.) size of playlist to be created, 2.) ‘seed’ song to be used, 3.) inclusionary and exclusionary constraints, and 4.) features to be used for comparison. Research will need to be done on the implementation of JSON for this usage context.
 
-For database operations, following research of the scheme used by the dataset ‘Music4All’, a framework such as ‘Pandas’ will likely be used to store associated data. Allowing for database operations akin to ‘projection’ and ‘section’ to be used for filtering based on associated metadata. 
+For database operations, following research of the scheme used by the dataset `Music4All`, a framework such as `Pandas` will likely be used to store associated data. Allowing for database operations akin to ‘projection’ and ‘selection’ to be used for filtering based on associated metadata. 
 
 Lastly, research will need to be conducted on similarity measures that can be used within the resulting search space such as ‘k-nearest neighbours’ to rank songs that are most similar to the provided ‘seed’ song. As the system seeks to enable for comparison on only selected features, further research will need to be done for methods such as a weighted approach for feature importance. 
 
@@ -22,14 +22,14 @@ Music Maven will be using the music4all (M4A) dataset. The first goal is to obta
 
 Ensure the M4A dataset is adequate for a similarity search. That is, removing unneeded features, scaling numeric values and encoding categories. The pruned and processed dataset will be used for any training and querying. We can also begin to query the dataset using basic Pandas Dataframe functions.
 
-MIR Features in M4A
+**MIR Features in M4A**
 - Dancability
 - Energy
 - Key
 - Mode
 - Valence
 
-Metadata Features in M4A
+**Metadata Features in M4A**
 - ID
 - Album Name
 - Release Date
@@ -66,7 +66,7 @@ $\hspace{3cm}$“Genre”: [“jazz”],
 \
 $\hspace{3cm}$“Year_range”: [[1945, 1970]]}
 \
-$\hspace{2cm}$ }
+$\hspace{2cm}$
 
 **Constraint List:**
 
@@ -92,83 +92,93 @@ This time will be used to evaluate our current progress, iterate, refactor, and 
 
 Determine how to integrate our work into the Music Maven – ideally with NLP. Have the LLM process human input and return a structured JSON query. Map keywords such as “vibe” to features such as Dancibility, Energy and Valence, and favour their weights in the search.
 
-**Future Work**
-\
+### Future Work
+
 Explore API options to generate this playlist in a usable space – Youtube, Spotify, etc.
 
 # Tools/Dataset/Libraries
-Music4All Dataset
-Found  here: music4all
+`Music4All Dataset` <br>
 Suggested and shared by George Tzanetakis.
 
-Pandas
+`Pandas` <br>
 We will use Pandas Dataframes to hold the features from the M4a dataset. This allows us to do basic projections, selections, and preprocessing. 
 
-Numpy
+`Numpy` <br>
 Used for vectorization, normalization, and search.
 
-JSON
+`JSON` <br>
 Queries will be stored in JSON files following a specific template.
 
-Scikit-learn
+`Scikit-learn` <br>
 Potential use for clustering, training and processing.
 
-LLM API
+`LLM API` <br>
 A way to allow users to input natural language.
 
 # Roles
-Thomas Pietrovito:
-Dataframe management
-Preprocessing
-Weighted Euclidean Search
-Link to NLP and LLM
+### Thomas Pietrovito:
+- Dataframe management
+- Preprocessing
+- Weighted Euclidean Search
+- Link to NLP and LLM
 
-Noah Hicks:
-Reading / Writing to JSON files
-Query parsing, structure, schema
-Extracting / Inferring weights 
-Link to NLP and LLM
+### Noah Hicks:
+- Reading / Writing to JSON files
+- Query parsing, structure, schema
+- Extracting / Inferring weights 
+- Link to NLP and LLM
 
 # Progress Indicators
-## Thomas Pietrovito
-PI.1 (Basic): Load M4A feature and metadata into a structured pandas Dataframe
-PI.2 (Basic): Normalize data and preprocess dataset for searching
-PI.3 (Expected): Implement a Euclidean search algorithm that returns a desired number of closest matches
-PI.4 (Expected): Extend search algorithm to accept weights and feature importance
-PI.5 (Advanced): Prototype an interface that allows features and weights to be offered from natural language input
-## Noah Hicks
-PI.1 (Basic): Implement reading/writing to JSON files
-PI.2 (Basic): Map JSON query to pandas dataset filtering functions
-PI.3 (Expected): Extend input to accept inferred weights (e.g, “faster”, more energetic”)
-PI.4 (Expected): Prototype an NLP pipeline (via spaCy or LLM API) that converts natural language into valid JSON query
-PI.5 (Advanced): Explore failure and ambiguity in natural queries, local tasks vs generative tasks
+### Thomas Pietrovito:
+**PI.1 (Basic):** Load M4A feature and metadata into a structured pandas Dataframe
+
+**PI.2 (Basic):** Normalize data and preprocess dataset for searching
+
+**PI.3 (Expected):** Implement a Euclidean search algorithm that returns a desired number of closest matches
+
+**PI.4 (Expected):** Extend search algorithm to accept weights and feature importance
+
+**PI.5 (Advanced):** Prototype an interface that allows features and weights to be offered from natural language input
+
+### Noah Hicks:
+**PI.1 (Basic):** Implement reading/writing to JSON files
+
+**PI.2 (Basic):** Map JSON query to pandas dataset filtering functions
+
+**PI.3 (Expected):** Extend input to accept inferred weights (e.g, “faster”, more energetic”)
+
+**PI.4 (Expected):** Prototype an NLP pipeline (via spaCy or LLM API) that converts natural language into valid JSON query
+
+**PI.5 (Advanced):** Explore failure and ambiguity in natural queries, local tasks vs generative tasks
 
 # Literature
 
 # Bibliography
-Grouping / Clustering
+**Grouping / Clustering**
 
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/1956/
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/983/
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/830/
-https://ieeexplore-ieee-org.ezproxy.library.uvic.ca/document/4457263
+- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/1956/ <br>
+- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/983/ <br>
+- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/830/ <br>
+- https://ieeexplore-ieee-org.ezproxy.library.uvic.ca/document/4457263 <br>
 
-Constraints
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/478/
+**Playlists**
 
-Playlists
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/1830/
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/1372/
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/461/
+- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/1830/ <br>
+- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/1372/ <br>
+- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/461/ <br>
 
-NLP / CSP / LLM
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.ijcai.org/proceedings/2024/0841.pdf 
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://arxiv.org/pdf/2503.24193
+**Features, Metadata, and Dimensionality Reduction**
 
+- https://ismir2011.ismir.net/papers/PS1-10.pdf
+- https://www.researchgate.net/publication/224224057_Unifying_Low-Level_and_High-Level_Music_Similarity_Measures
+- https://ismir-explorer.ai.ovgu.de/app/view/pdf/1882/
+- https://ismir-explorer.ai.ovgu.de/app/view/pdf/1787/
 
-Features, Metadata, and Dimensionality Reduction
-https://ismir2011.ismir.net/papers/PS1-10.pdf
-https://www.researchgate.net/publication/224224057_Unifying_Low-Level_and_High-Level_Music_Similarity_Measures
-https://ismir-explorer.ai.ovgu.de/app/view/pdf/1882/
-https://ismir-explorer.ai.ovgu.de/app/view/pdf/1787/
+**NLP / CSP / LLM**
 
+- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.ijcai.org/proceedings/2024/0841.pdf <br>
+- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://arxiv.org/pdf/2503.24193 <br>
+
+**Constraints**
+
+- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/478/ <br>
