@@ -1,69 +1,137 @@
-# 🎵 Music-Maven — Tempo & Beat Queries (MP2.G3) (ONGOING)
+# MP2.G3 – Beat Tracking & Tempo-Related Queries
+
+CSC475 / CSC575 Mega Project Specification  
+Music-Maven Sub-Project
 
 ## Overview
 
-This component of Music-Maven implements tempo- and beat-related music queries as part of a music-aware chatbot. The goal is to integrate existing beat-tracking tools and expose their results through natural-language responses, rather than training new audio models. This work corresponds to MP2.G3: Integrating beat trackers and tempo-related queries.
+This sub-project focuses on integrating beat tracking and tempo analysis into the Music-Maven chatbot system. The goal is to enable the chatbot to analyze real audio recordings and respond intelligently to tempo-related music queries.
 
-## Objectives
+Rather than developing new signal processing algorithms from scratch, this project integrates existing beat-tracking libraries and exposes their outputs through a conversational interface.
 
-- Estimate tempo (BPM) from audio files
-- Detect beat locations
-- Classify tempo as slow, moderate, fast, or very fast
-- Answer tempo-related natural language queries
-- Provide explainable, demo-ready outputs
+---
 
-## Design Philosophy
+## Motivation
 
-- Use off-the-shelf audio analysis libraries
-- Avoid custom DSP or model training
-- Emphasize system integration and interpretation
-- Keep scope small, robust, and reliable
+Most general-purpose chatbots can discuss music conceptually but cannot analyze actual audio signals. This sub-project addresses that limitation by enabling:
 
-## System Architecture
+- Automatic tempo (BPM) estimation
+- Beat detection from audio files
+- Conversational explanations of rhythmic characteristics
+- Tempo-based reasoning (e.g., fast vs slow classification)
 
-User Query → Intent Interpretation → Audio Analysis (beat tracker) → Tempo and Beat Extraction → Natural Language Response
+This module contributes real audio intelligence to the overall Music-Maven system.
 
-## Supported Query Types
+---
 
-- What is the tempo (BPM) of this song?
-- Is this song fast or slow?
-- Where are the beats in this track?
-- Is this song suitable for dancing?
-- Compare the tempo of two songs
+## Objectives (Individual Contribution)
 
-## Tempo Categorization
+1. Implement tempo (BPM) estimation from audio files.
+2. Extract beat timestamps from tracks.
+3. Support tempo-related natural language queries.
+4. Provide interpretable explanations of tempo results.
+5. Integrate tempo functionality with the main chatbot architecture.
 
-Tempo is interpreted using common BPM ranges:
+---
 
-- Below 80 BPM: Slow
-- 80–110 BPM: Moderate
-- 110–140 BPM: Fast
-- Above 140 BPM: Very Fast
+## Key Performance Indicators (KPIs)
+
+The project will be considered successful if the following are achieved:
+
+1. The system correctly estimates BPM for sample tracks from the Music4All dataset.
+2. Beat timestamps are successfully extracted for analyzed tracks.
+3. The chatbot correctly answers at least the following query types:
+   - “What is the tempo of this song?”
+   - “Is this song fast or slow?”
+   - “Where are the beats?”
+   - “Which of these two songs is faster?”
+4. The tempo module integrates with the main Music-Maven routing system.
+5. A successful demonstration is performed using at least 5 real audio samples.
+
+---
+
+## Technical Approach
+
+### Audio Analysis
+
+Tempo and beat detection will be implemented using existing Python libraries such as:
+
+- librosa (for beat tracking and tempo estimation)
+
+The system will:
+
+- Load an audio file
+- Estimate tempo in beats per minute (BPM)
+- Extract beat frame positions and convert them to timestamps
+
+### Tempo Categorization
+
+Estimated BPM values will be categorized as:
+
+- Below 80 BPM → Slow
+- 80–110 BPM → Moderate
+- 110–140 BPM → Fast
+- Above 140 BPM → Very Fast
+
+These categories will be used to generate conversational explanations.
+
+### Query Handling
+
+Tempo-related keywords will trigger the beat-tracking module. Examples include:
+
+- tempo
+- BPM
+- fast
+- slow
+- beats
+- rhythm
+
+The module will return structured tempo data which is then converted into a natural-language response.
+
+---
 
 ## Dataset
 
-This module is evaluated using the Music4All dataset. Sampled tracks are analyzed to validate BPM extraction, demonstrate tempo distributions, and showcase example query responses. Full dataset preprocessing is not required; only sampled audio is used for testing and demonstration purposes.
+The Music4All dataset will be used for testing and evaluation. Sampled tracks will be analyzed to:
 
-## Dependencies
+- Validate BPM estimation
+- Demonstrate tempo distribution across songs
+- Provide examples for conversational queries
 
-The implementation relies on the following Python libraries:
+Full dataset preprocessing is not required; only selected samples will be used for demonstration and validation.
 
-- librosa
-- numpy
-- soundfile
+---
 
-These can be installed using pip.
+## Expected Deliverables
 
-## Example Interaction (May change)
+- Working tempo estimation module
+- Beat extraction functionality
+- Conversational tempo query handling
+- Integration with Music-Maven chatbot
+- Demonstration using Music4All samples
 
-User: Is this song fast or slow?
-Bot:
-Estimated tempo: 128 BPM
-Tempo category: Fast
-This tempo is energetic and commonly suitable for dancing.
+---
 
 ## Limitations
 
-- Tempo estimation is approximate and may vary depending on audio quality and musical style
-- Beat tracking accuracy may differ across genres
-- This module focuses on integration rather than state-of-the-art tempo estimation
+- Tempo estimation is approximate and may vary across genres.
+- Beat detection accuracy depends on audio quality.
+- No custom model training is performed in this module.
+
+---
+
+## Future Extensions
+
+- Beat visualization
+- Tempo confidence scoring
+- Rhythmic pattern analysis
+- Danceability estimation
+
+---
+
+## Contributor
+
+Robert Widjaja  
+MP2.G3 – Beat Tracking & Tempo-Related Queries  
+CSC475 / CSC575  
+University of Victoria
