@@ -63,8 +63,6 @@ To align with **MP2.G1 (Architecture)**, this module will be deployed as a **Fas
 ## 4. Individual Contributions
 
 ### **Bharath Irukulapati**
-**Role:** Advanced Architect & Deep Learning Lead  
-**Focus:** Integration of Deep Learning models (TCN/Transformers) for complex rhythm analysis and full system architecture implementation.
 
 **Objective: Deep Learning Architecture & System Integration**
 * **PI.1 (Basic):** Design and implement the FastAPI microservice architecture with Pydantic schemas to serve beat tracking predictions to the central Music Maven chatbot.
@@ -76,8 +74,6 @@ To align with **MP2.G1 (Architecture)**, this module will be deployed as a **Fas
 ---
 
 ### **Robert Widjaja**
-**Role:** DSP Engineer & Data Pipeline  
-**Focus:** Standard signal processing, dataset management, and baseline tempo estimation.
 
 **Objective: Establish Baseline Tempo Estimation Pipeline**
 * **PI.1 (Basic):** Write scripts to batch-process audio files from the Music4All dataset, handling format conversion and sampling rate normalization.
@@ -87,8 +83,6 @@ To align with **MP2.G1 (Architecture)**, this module will be deployed as a **Fas
 * **PI.5 (Advanced):** Create a "confidence score" metric that flags tracks where the tempo is ambiguous or fluctuating.
 
 ### **Apoorva Chadda**
-**Role:** Evaluation & Query Logic  
-**Focus:** Testing, validation, and connecting extraction logic to user queries.
 
 **Objective: Evaluation & Semantic Query Handling**
 * **PI.1 (Basic):** Curate a "Gold Standard" subset of 50 diverse songs from Music4All with manually verified tempos for testing.
