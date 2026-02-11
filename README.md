@@ -25,7 +25,7 @@ The goal of this project is to create a music-specific chatbot that is able to a
 * Apoorva Chadda (apoorva.rampal.2023@gmail.com)
 * Bharath Irukulapati (bharath.irukulapati@gmail.com)
 
-## MP2.G4: Artist classifier, similarity 
+## MP2.G4: Artist Classifier, similarity 
 
 * Kevin Zhu (kaiwenzhu@uvic.ca)
 * Navdeep Saroha(nsaroha@uvic.ca)
