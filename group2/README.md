@@ -69,7 +69,7 @@ $\hspace{3cm}$“Year_range”: [[1945, 1970]]}
 $\hspace{2cm}$ }
 
 **Constraint List:**
-\
+
 $\hspace{2cm}$ k = 100
 \
 $\hspace{2cm}$ match = valence, tempo
@@ -80,8 +80,7 @@ $\hspace{2cm}$ exclude_year = 1945-1970
 
 
 **Boolean Query:**
-\
-\
+
 $\hspace{2cm}$ User: k=100, (valence & tempo) & !year:1945-1970 & !genre:jazz
 
 
