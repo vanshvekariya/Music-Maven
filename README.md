@@ -18,6 +18,7 @@ The goal of this project is to create a music-specific chatbot that is able to a
 
 * Thomas Pietrovito (thomhplatt@gmail.com)
 * Noah Hicks (noahhicks2001@gmail.com)
+* Liam Leibel (lnleibel@outlook.com)
 
 ## MP2.G3: Integrating with beat trackers, tempo related queries 
 
@@ -28,7 +29,6 @@ The goal of this project is to create a music-specific chatbot that is able to a
 ## MP2.G4: Artist classifier, similarity 
 
 * Kevin Zhu (kaiwenzhu@uvic.ca )
-* Liam Leibel (lnleibel@outlook.com)
 * Navdeep Saroha(nsaroha@uvic.ca)
 
 
