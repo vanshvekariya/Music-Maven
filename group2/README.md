@@ -156,16 +156,16 @@ A way to allow users to input natural language.
 # Bibliography
 **Grouping / Clustering**
 
-- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/1956/ <br>
-- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/983/ <br>
-- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/830/ <br>
+- https://ismir-explorer.ai.ovgu.de/app/view/pdf/1956/ <br>
+- https://ismir-explorer.ai.ovgu.de/app/view/pdf/983/ <br>
+- https://ismir-explorer.ai.ovgu.de/app/view/pdf/830/ <br>
 - https://ieeexplore-ieee-org.ezproxy.library.uvic.ca/document/4457263 <br>
 
 **Playlists**
 
-- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/1830/ <br>
-- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/1372/ <br>
-- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/461/ <br>
+- https://ismir-explorer.ai.ovgu.de/app/view/pdf/1830/ <br>
+- https://ismir-explorer.ai.ovgu.de/app/view/pdf/1372/ <br>
+- https://ismir-explorer.ai.ovgu.de/app/view/pdf/461/ <br>
 
 **Features, Metadata, and Dimensionality Reduction**
 
@@ -176,9 +176,9 @@ A way to allow users to input natural language.
 
 **NLP / CSP / LLM**
 
-- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.ijcai.org/proceedings/2024/0841.pdf <br>
-- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://arxiv.org/pdf/2503.24193 <br>
+- https://www.ijcai.org/proceedings/2024/0841.pdf <br>
+- https://arxiv.org/pdf/2503.24193 <br>
 
 **Constraints**
 
-- chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://ismir-explorer.ai.ovgu.de/app/view/pdf/478/ <br>
+- https://ismir-explorer.ai.ovgu.de/app/view/pdf/478/ <br>
