@@ -21,18 +21,21 @@ The implementation will rely on existing audio processing libraries (e.g., libro
 # Individual Contribution
 
 ## Robert Widjaja
+## Apoorva Chadda
 
 ### Objective: Implement and evaluate a functional tempo estimation and beat tracking module integrated into the Music-Maven chatbot.
 
 PI1 (basic): Load and preprocess audio files from the Music4All dataset for analysis.
 
-PI2 (basic): Extract tempo (BPM) using a beat-tracking algorithm and return numerical tempo values.
+PI2 (basic): Developing new features by extracting tempo (BPM) using a beat-tracking algorithm and return numerical tempo values.
 
 PI3 (expected): Extract beat timestamps and generate natural-language responses for tempo-related user queries (e.g., “Is this song fast or slow?”).
 
 PI4 (expected): Demonstrate functionality on at least 5 different audio samples and report tempo estimation results.
 
 PI5 (advanced): Analyze tempo estimation behavior across a subset of the dataset (e.g., summarize BPM distribution or compare tempo outputs for different audio segments of the same track).
+
+PI6 (advanced): Identify similar segments/genres/profile songs using unsupervised machine learning. 
 
 ---
 
@@ -52,4 +55,3 @@ PI5 (advanced): Analyze tempo estimation behavior across a subset of the dataset
 - No custom model training is performed in this module.
 
 ---
-test commit
