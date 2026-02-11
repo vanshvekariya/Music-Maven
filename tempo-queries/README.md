@@ -1,137 +1,54 @@
-# MP2.G3 – Beat Tracking & Tempo-Related Queries
+# Music-Maven – MP2.G3 Beat Tracking & Tempo Queries
 
-CSC475 / CSC575 Mega Project Specification  
-Music-Maven Sub-Project
+CSC475 / CSC575 Mega Project Specification
 
 ## Overview
 
-This sub-project focuses on integrating beat tracking and tempo analysis into the Music-Maven chatbot system. The goal is to enable the chatbot to analyze real audio recordings and respond intelligently to tempo-related music queries.
+Music-Maven is a music-aware conversational AI system capable of analyzing audio recordings and responding intelligently to music-related queries. The system integrates Large Language Models (LLMs) with audio signal processing techniques to provide domain-specific music understanding.
 
-Rather than developing new signal processing algorithms from scratch, this project integrates existing beat-tracking libraries and exposes their outputs through a conversational interface.
-
----
-
-## Motivation
-
-Most general-purpose chatbots can discuss music conceptually but cannot analyze actual audio signals. This sub-project addresses that limitation by enabling:
-
-- Automatic tempo (BPM) estimation
-- Beat detection from audio files
-- Conversational explanations of rhythmic characteristics
-- Tempo-based reasoning (e.g., fast vs slow classification)
-
-This module contributes real audio intelligence to the overall Music-Maven system.
+This sub-project (MP2.G3) focuses on integrating beat tracking and tempo-related functionality into the system.
 
 ---
 
-## Objectives (Individual Contribution)
+## MP2.G3 – Beat Tracking & Tempo Queries
 
-1. Implement tempo (BPM) estimation from audio files.
-2. Extract beat timestamps from tracks.
-3. Support tempo-related natural language queries.
-4. Provide interpretable explanations of tempo results.
-5. Integrate tempo functionality with the main chatbot architecture.
+The goal of this component is to enable the chatbot to analyze real audio signals and respond to tempo-related questions. The system will extract tempo (BPM) and beat information from audio files and convert those numerical results into meaningful conversational responses.
+
+The implementation will rely on existing audio processing libraries (e.g., librosa), with emphasis on integration, evaluation, and explanation rather than developing new signal processing algorithms.
 
 ---
 
-## Key Performance Indicators (KPIs)
+# Individual Contribution
 
-The project will be considered successful if the following are achieved:
+## Robert Widjaja
 
-1. The system correctly estimates BPM for sample tracks from the Music4All dataset.
-2. Beat timestamps are successfully extracted for analyzed tracks.
-3. The chatbot correctly answers at least the following query types:
-   - “What is the tempo of this song?”
-   - “Is this song fast or slow?”
-   - “Where are the beats?”
-   - “Which of these two songs is faster?”
-4. The tempo module integrates with the main Music-Maven routing system.
-5. A successful demonstration is performed using at least 5 real audio samples.
+### Objective: Implement and evaluate a functional tempo estimation and beat tracking module integrated into the Music-Maven chatbot.
 
----
+PI1 (basic): Load and preprocess audio files from the Music4All dataset for analysis.
 
-## Technical Approach
+PI2 (basic): Extract tempo (BPM) using a beat-tracking algorithm and return numerical tempo values.
 
-### Audio Analysis
+PI3 (expected): Extract beat timestamps and generate natural-language responses for tempo-related user queries (e.g., “Is this song fast or slow?”).
 
-Tempo and beat detection will be implemented using existing Python libraries such as:
+PI4 (expected): Demonstrate functionality on at least 5 different audio samples and report tempo estimation results.
 
-- librosa (for beat tracking and tempo estimation)
-
-The system will:
-
-- Load an audio file
-- Estimate tempo in beats per minute (BPM)
-- Extract beat frame positions and convert them to timestamps
-
-### Tempo Categorization
-
-Estimated BPM values will be categorized as:
-
-- Below 80 BPM → Slow
-- 80–110 BPM → Moderate
-- 110–140 BPM → Fast
-- Above 140 BPM → Very Fast
-
-These categories will be used to generate conversational explanations.
-
-### Query Handling
-
-Tempo-related keywords will trigger the beat-tracking module. Examples include:
-
-- tempo
-- BPM
-- fast
-- slow
-- beats
-- rhythm
-
-The module will return structured tempo data which is then converted into a natural-language response.
-
----
-
-## Dataset
-
-The Music4All dataset will be used for testing and evaluation. Sampled tracks will be analyzed to:
-
-- Validate BPM estimation
-- Demonstrate tempo distribution across songs
-- Provide examples for conversational queries
-
-Full dataset preprocessing is not required; only selected samples will be used for demonstration and validation.
+PI5 (advanced): Analyze tempo estimation behavior across a subset of the dataset (e.g., summarize BPM distribution or compare tempo outputs for different audio segments of the same track).
 
 ---
 
 ## Expected Deliverables
 
-- Working tempo estimation module
-- Beat extraction functionality
-- Conversational tempo query handling
-- Integration with Music-Maven chatbot
+- Working tempo estimation and beat extraction module
+- Conversational handling of tempo-related queries
 - Demonstration using Music4All samples
+- Basic evaluation of system behavior
 
 ---
 
 ## Limitations
 
-- Tempo estimation is approximate and may vary across genres.
-- Beat detection accuracy depends on audio quality.
+- Tempo estimation is approximate and dependent on audio characteristics.
+- Beat tracking accuracy may vary across musical genres.
 - No custom model training is performed in this module.
 
 ---
-
-## Future Extensions
-
-- Beat visualization
-- Tempo confidence scoring
-- Rhythmic pattern analysis
-- Danceability estimation
-
----
-
-## Contributor
-
-Robert Widjaja  
-MP2.G3 – Beat Tracking & Tempo-Related Queries  
-CSC475 / CSC575  
-University of Victoria
