@@ -124,7 +124,7 @@ To align with **MP2.G1 (Architecture)**, this module will be deployed as a **Fas
 
 * **PI.3 (Advanced):**  User-generated music often modifies audio (tempo, beats, remix, lo-fi) while keeping lyrics unchanged. Identify the original song from short audio segments or lyrics snippets, even under transformations. Support robust matching for partial or distorted inputs. Inspired by Shazam, SoundHound, and YouTube Content ID for copyright enforcement.
 
-	- Use segment-level audio similarity and lyrics-based text similarity (cosine & Jaccard) for reliable identification.
+	-Use segment-level audio similarity and lyrics-based text similarity (cosine & Jaccard) for reliable identification.
 
 
 ---
