@@ -82,14 +82,48 @@ To align with **MP2.G1 (Architecture)**, this module will be deployed as a **Fas
 * **PI.4 (Expected):** Implement a caching mechanism to store computed BPMs for the dataset to avoid re-processing.
 * **PI.5 (Advanced):** Create a "confidence score" metric that flags tracks where the tempo is ambiguous or fluctuating.
 
-### **Apoorva Chadda**
+### Apoorva Chadda
 
-**Objective: Evaluation & Semantic Query Handling**
-* **PI.1 (Basic):** Curate a "Gold Standard" subset of 50 diverse songs from Music4All with manually verified tempos for testing.
-* **PI.2 (Basic):** Create unit tests for the beat tracking functions to ensure stability.
-* **PI.3 (Expected):** Design the logic for "Fuzzy Tempo Search" (e.g., handling queries for "around 120 bpm" with a +/- tolerance).
-* **PI.4 (Expected):** Generate confusion matrices for tempo octave errors (e.g., confusing 70 BPM with 140 BPM).
-* **PI.5 (Advanced):** Analyze the correlation between extracted tempo features and Music4All genre tags to improve recommendation logic.
+**Objective: Build a music feature dataset, cluster songs, and identify originals from short audio or lyrics snippets.**
+
+* **PI.1 (Advanced):** Build a dataset contaning below features against each audio file:
+
+Timbre (how the song sounds)
+These are the most important for clustering.
+- MFCCs (mean + variance)
+- Spectral centroid
+- Spectral bandwidth
+- Spectral contrast
+- Spectral rolloff
+- Zero-crossing rate
+- RMS energy
+These describe brightness, warmth, sharpness, noisiness, etc.
+
+Rhythm (how the song moves)
+Useful for grouping songs with similar groove.
+- Tempo (BPM)
+- Beat histogram
+- Inter-beat intervals (cadence)
+- Onset strength statistics
+
+Harmony (what chords/notes dominate)
+Great for genre clustering.
+- Chroma features (mean + variance)
+- Tonnetz (tonal centroid features)
+
+Energy & Dynamics
+Captures loudness patterns.
+- RMS energy (mean, variance)
+- Mel-spectrogram energy distribution
+
+* **PI.2 (Advanced):** Using the above dataset, we will implement unsupervised machine learning through DBSCAN to cluster similar types of songs in the same groupings.
+
+-Identify songs in the same clusters by breaking them down into themes of genre, energy, and cadence - In case compute complexity increases, instead of using pandas, we will be able to using Spark Python.
+
+* **PI.3 (Advanced):**  User-generated music often modifies audio (tempo, beats, remix, lo-fi) while keeping lyrics unchanged. Identify the original song from short audio segments or lyrics snippets, even under transformations. Support robust matching for partial or distorted inputs. Inspired by Shazam, SoundHound, and YouTube Content ID for copyright enforcement.
+
+- Use segment-level audio similarity and lyrics-based text similarity (cosine & Jaccard) for reliable identification.
+
 
 ---
 
