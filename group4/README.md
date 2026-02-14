@@ -1,4 +1,4 @@
-# Proposed Project
+# Music Maven: Artist Similarity Classification
 For this subsection of 'Music Maven', we propose the creation of an artist classification and similarity search system. Given a song's audio features, the system should be able to identify the most likely artist, and given an artist, find other artists with similar musical profiles. To achieve this, we will build artist-level feature representations from MIR data and apply similarity and classification methods to enable queries such as:
 
 * "Who makes music that sounds like this song?"
@@ -209,3 +209,4 @@ Explore richer artist representations beyond feature means — for example, usin
 
 - https://www.ijcai.org/proceedings/2024/0841.pdf
 - https://arxiv.org/pdf/2503.24193
+
