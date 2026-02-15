@@ -92,7 +92,7 @@ Deliverables:
 
 # Team Roles & Detailed Objectives
 
-Maria Malini Anthony - Classification and Integration
+# Maria Malini Anthony - Classification and Integration
 
 Objective 1: Lyrics Classification
 PI.1 (basic): Extract 5-10 keywords per song.
@@ -109,7 +109,7 @@ PI.4 (advanced): Test full module (classification + semantic search) on a held-o
 
 Final: Push final version to GitHub with clear repository structure and instructions for teammate/API use. 
 
-Evidence Obojade - Search & API Integration 
+# Evidence Obojade - Search & API Integration 
 
 Objective 1: Semantic Search
 PI.1 (basic): Implement keyword-based top-k search.
