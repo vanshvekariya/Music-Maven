@@ -95,33 +95,33 @@ Deliverables:
 # Maria Malini Anthony - Classification and Integration
 
 Objective 1: Lyrics Classification
-PI.1 (basic): Extract 5-10 keywords per song.
-PI.2 (expected): Generate TF-IDF / embeddings for each song.
-PI.3 (expected): Train multiple classifiers (Logistic Regression, SVM, KNN/Random Forest).
-PI.4 (expected): Evaluate models (accuracy, F1-score), select best-performing.
-PI.5 (advanced): Multi-label classification, hyperparameter tuning.
+- PI.1 (basic): Extract 5-10 keywords per song.
+- PI.2 (expected): Generate TF-IDF / embeddings for each song.
+- PI.3 (expected): Train multiple classifiers (Logistic Regression, SVM, KNN/Random Forest).
+- PI.4 (expected): Evaluate models (accuracy, F1-score), select best-performing.
+- PI.5 (advanced): Multi-label classification, hyperparameter tuning.
 
 Objective 2: Feature Analysis & Integration
-PI.1 (basic): Analyze feature importance, compare keyword features vs embeddings for classification performance.
-PI.2 (expected): Save trained classifier and feature vectors in a structured format for API use (.pkl files).
-PI.3 (expected): Integrate classifier with search component and run preliminary end-to-end tests on sample queries.
-PI.4 (advanced): Test full module (classification + semantic search) on a held-out dataset to verify accuracy and search relevance.
+- PI.1 (basic): Analyze feature importance, compare keyword features vs embeddings for classification performance.
+- PI.2 (expected): Save trained classifier and feature vectors in a structured format for API use (.pkl files).
+- PI.3 (expected): Integrate classifier with search component and run preliminary end-to-end tests on sample queries.
+- PI.4 (advanced): Test full module (classification + semantic search) on a held-out dataset to verify accuracy and search relevance.
 
 Final: Push final version to GitHub with clear repository structure and instructions for teammate/API use. 
 
 # Evidence Obojade - Search & API Integration 
 
 Objective 1: Semantic Search
-PI.1 (basic): Implement keyword-based top-k search.
-PI.2 (expected): Implement embedding-based semantic search.
-PI.3 (expected): Add top-k retrieval with optional filters (genre, mood).
-PI.4 (advanced): Support multilingual lyrics search.
+- PI.1 (basic): Implement keyword-based top-k search.
+- PI.2 (expected): Implement embedding-based semantic search.
+- PI.3 (expected): Add top-k retrieval with optional filters (genre, mood).
+- PI.4 (advanced): Support multilingual lyrics search.
 
 Objective 2: API Integration
-PI.1 (basic): Set up FastAPI microservice.
-PI.2 (basic): Define JSON query format for structured requests.
-PI.3 (expected): Connect classifier & embedding search to API.
-PI.4 (advanced): Ensure API works with chatbot queries, test end-to-end.
+- PI.1 (basic): Set up FastAPI microservice.
+- PI.2 (basic): Define JSON query format for structured requests.
+- PI.3 (expected): Connect classifier & embedding search to API.
+- PI.4 (advanced): Ensure API works with chatbot queries, test end-to-end.
 
 Final: Push final version to GitHub with clear repository structure and instructions for teammate/API use. 
 
