@@ -33,7 +33,6 @@ The goal of this project is to create a music-specific chatbot that is able to a
 
 ## MP2.G5: Lyrics classification, search 
 
-* Quinn Foster (quinnjfoster@gmail.com)
 * Evidence obojade(kikipretty07@gmail.com)
 * Maria Malini Anthony (maria.malini234@gmail.com)
 
