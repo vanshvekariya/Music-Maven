@@ -50,7 +50,7 @@ We use the Music4All dataset [1], which contains:
 - **Genre and tag annotations:** 853 genre tags, 19,541 user tags
 - **15,602 user listening histories** for recommendation research
 
-We also use a lyrics dataset from Kaggle to extend semantic search over song text. The combination of metadata, lyrics, and audio makes Music4All well-suited for multimodal retrieval.
+We will start with working on the data combining two Kaggle datasets: one with lyrics and the other with just text data (excluding audio clips) and then extend it to include the audioclips. The combination of metadata, lyrics, and audio makes Music4All well-suited for multimodal retrieval.
 
 ---
 
