@@ -84,16 +84,6 @@ To align with **MP2.G1 (Architecture)**, this module will be deployed as a **Fas
 
 ### **Apoorva Chadda**
 
-**Objective: Evaluation & Semantic Query Handling**
-* **PI.1 (Basic):** Curate a "Gold Standard" subset of 50 diverse songs from Music4All with manually verified tempos for testing.
-* **PI.2 (Basic):** Create unit tests for the beat tracking functions to ensure stability.
-* **PI.3 (Expected):** Design the logic for "Fuzzy Tempo Search" (e.g., handling queries for "around 120 bpm" with a +/- tolerance).
-* **PI.4 (Expected):** Generate confusion matrices for tempo octave errors (e.g., confusing 70 BPM with 140 BPM).
-* **PI.5 (Advanced):** Analyze the correlation between extracted tempo features and Music4All genre tags to improve recommendation logic.
-
-
-### **Apoorva Chadda**
-
 **Objective: Build a music feature dataset, cluster songs, and identify originals from short audio or lyrics snippets.**
 
 * **PI.1 (Advanced):** Build a dataset contaning below features against each audio file:
