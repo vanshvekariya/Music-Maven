@@ -6,12 +6,7 @@
 
 ## Project Overview
 
-**Music Maven** is a music-specific AI chatbot capable of:
-
-- Playing music  
-- Analyzing raw audio  
-- Understanding structured music queries  
-- Returning intelligent, structured responses  
+**Music Maven** 
 
 The system combines:
 
@@ -137,16 +132,6 @@ Formulated as a **multi-label classification** problem.
 
 Deployment via **FastAPI** microservice.
 
-### Example Request
-
-```json
-{
-  "type": "audio_tag",
-  "audio_url": "...",
-  "top_k_genres": 3,
-  "include_moods": true,
-  "include_instruments": true
-}
 ```
 
 # Evaluation Strategy
@@ -160,7 +145,7 @@ Deployment via **FastAPI** microservice.
 - Accuracy  
 - Precision  
 - Recall  
-- Macro F1  
+-  F1  
 - Confusion Matrix  
 
 ## Auto-Tagging (Multi-Label)
@@ -171,7 +156,7 @@ Deployment via **FastAPI** microservice.
 
 ---
 
-# ⚠ Risks & Limitations
+# Risks & Limitations
 
 - Noisy labels (GTZAN dataset)  
 - Genre ambiguity (e.g., Rock vs Alternative)  
@@ -228,7 +213,7 @@ PI.4 (advanced): Test embedding transferability on secondary dataset.
 PI.1 (basic): Train Logistic Regression baseline on MFCC features.  
 PI.2 (expected): Train SVM and Random Forest models.  
 PI.3 (expected): Train CNN on mel-spectrogram inputs.  
-PI.4 (expected): Evaluate models (Accuracy, Macro F1, Confusion Matrix).  
+PI.4 (expected): Evaluate models (Accuracy,  F1, Confusion Matrix).  
 PI.5 (advanced): Hyperparameter tuning and model comparison.  
 
 ### Objective 2: Model Comparison & Analysis
