@@ -132,8 +132,6 @@ Formulated as a **multi-label classification** problem.
 
 Deployment via **FastAPI** microservice.
 
-```
-
 # Evaluation Strategy
 
 ## Representation Learning
