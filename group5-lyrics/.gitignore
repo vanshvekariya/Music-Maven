@@ -1,0 +1,7 @@
+data/
+*.zip
+*.npy
+*.pkl
+__pycache__/
+.DS_Store
+music-maven-env/
