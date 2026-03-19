@@ -10,13 +10,15 @@ I'm focusing on the data pipeline, knowledge graph, and frontend/API. Here are m
 - PI.4 (Expected): Add indexes and constraints for performance; verify referential integrity
 - PI.5 (Advanced): Build a data validation layer with automated checks for schema consistency
 
-### Objective 2: Knowledge Graph Implementation
+### Objective 2: Embedding Pipeline, Vector Database & LLM/RAG
 
-- PI.1 (Basic): Define Neo4j node types (Song, Artist, Genre, Album, Tag) and relationship types (PERFORMED, HAS_GENRE, etc.)
-- PI.2 (Basic): Ingest entities and relationships from Music4All into Neo4j with basic properties
-- PI.3 (Expected): Build the graph query agent (Cypher interface) and wire it into the RAG pipeline
-- PI.4 (Expected): Handle entity resolution and deduplication for artist/genre/tag names
-- PI.5 (Advanced): Infer additional relationships (e.g., artist similarity from shared genres/tags)
+- PI.1 (Basic): Set up Sentence-Transformers (all-MiniLM-L6-v2) and generate embeddings for song metadata
+- PI.2 (Basic): Create Qdrant collections with payload schema and batch upload embeddings
+- PI.3 (Basic): Set up LLM integration with OpenRouter free tier
+- PI.4 (Basic): Build basic RAG pipeline for music queries
+- PI.5 (Expected): Generate lyrics embeddings and load into separate Qdrant collection
+- PI.6 (Expected): Verify vector search functionality and optimize retrieval quality
+- PI.7 (Advanced): Implement quantization and tune HNSW parameters for large collections
 
 ### Objective 3: Frontend & API Integration
 
