@@ -1,0 +1,20 @@
+═════════════════════════════════════════════
+  Timbre  (50 features)
+═════════════════════════════════════════════
+"mfcc_1_mean", "mfcc_2_mean", "mfcc_3_mean", "mfcc_4_mean", "mfcc_5_mean", "mfcc_6_mean", "mfcc_7_mean", "mfcc_8_mean", "mfcc_9_mean", "mfcc_10_mean", "mfcc_11_mean", "mfcc_12_mean", "mfcc_13_mean", "mfcc_1_var", "mfcc_2_var", "mfcc_3_var", "mfcc_4_var", "mfcc_5_var", "mfcc_6_var", "mfcc_7_var", "mfcc_8_var", "mfcc_9_var", "mfcc_10_var", "mfcc_11_var", "mfcc_12_var", "mfcc_13_var", "spectral_centroid_mean", "spectral_centroid_var", "spectral_bandwidth_mean", "spectral_bandwidth_var", "spectral_rolloff_mean", "spectral_rolloff_var", "spectral_contrast_band1_mean", "spectral_contrast_band2_mean", "spectral_contrast_band3_mean", "spectral_contrast_band4_mean", "spectral_contrast_band5_mean", "spectral_contrast_band6_mean", "spectral_contrast_band7_mean", "spectral_contrast_band1_var", "spectral_contrast_band2_var", "spectral_contrast_band3_var", "spectral_contrast_band4_var", "spectral_contrast_band5_var", "spectral_contrast_band6_var", "spectral_contrast_band7_var", "zcr_mean", "zcr_var", "rms_mean", "rms_var"
+
+═════════════════════════════════════════════
+  Rhythm  (19 features)
+═════════════════════════════════════════════
+"tempo_bpm", "beat_histogram_bin1", "beat_histogram_bin2", "beat_histogram_bin3", "beat_histogram_bin4", "beat_histogram_bin5", "beat_histogram_bin6", "beat_histogram_bin7", "beat_histogram_bin8", "beat_histogram_bin9", "beat_histogram_bin10", "ibi_mean", "ibi_var", "ibi_min", "ibi_max", "onset_strength_mean", "onset_strength_var", "onset_strength_max", "onset_strength_median"
+
+═════════════════════════════════════════════
+  Harmony  (36 features)
+═════════════════════════════════════════════
+"chroma_1_mean", "chroma_2_mean", "chroma_3_mean", "chroma_4_mean", "chroma_5_mean", "chroma_6_mean", "chroma_7_mean", "chroma_8_mean", "chroma_9_mean", "chroma_10_mean", "chroma_11_mean", "chroma_12_mean", "chroma_1_var", "chroma_2_var", "chroma_3_var", "chroma_4_var", "chroma_5_var", "chroma_6_var", "chroma_7_var", "chroma_8_var", "chroma_9_var", "chroma_10_var", "chroma_11_var", "chroma_12_var", "tonnetz_1_mean", "tonnetz_2_mean", "tonnetz_3_mean", "tonnetz_4_mean", "tonnetz_5_mean", "tonnetz_6_mean", "tonnetz_1_var", "tonnetz_2_var", "tonnetz_3_var", "tonnetz_4_var", "tonnetz_5_var", "tonnetz_6_var"
+
+═════════════════════════════════════════════
+  Energy & Dynamics  (5 features)
+═════════════════════════════════════════════
+"mel_spec_mean", "mel_spec_var", "mel_spec_max", "mel_spec_min", "mel_spec_median"
+
