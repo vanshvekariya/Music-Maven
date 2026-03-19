@@ -3,7 +3,7 @@
 from .base_agent import BaseAgent
 from .sql_agent import SQLAgent
 from .vector_agent import VectorAgent
-from .query_router import QueryRouter, QueryType, QueryClassification
+from .query_router import QueryRouter, KGQueryRouter, QueryType, QueryClassification
 from .orchestrator import MultiAgentOrchestrator
 
 __all__ = [
@@ -11,6 +11,7 @@ __all__ = [
     'SQLAgent',
     'VectorAgent',
     'QueryRouter',
+    'KGQueryRouter',
     'QueryType',
     'QueryClassification',
     'MultiAgentOrchestrator'

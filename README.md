@@ -4,7 +4,8 @@ A full-stack AI-powered Music Information Retrieval (MIR) system built on the Mu
 
 ## Project Overview
 
-- **Multi-Agent AI**: Query router dispatches to SQL agent, Vector agent, or both
+- **Multi-Agent AI**: KG-aware query router dispatches to KG, SQL, Vector, or hybrid agents with zero LLM routing calls
+- **Knowledge Graph**: In-memory NetworkX graph with pre-computed aggregations for instant factual answers (artist stats, genre distributions, leaderboards, comparisons)
 - **Two Qdrant Collections**: Semantic search over lyrics (`music4all_lyrics`) and tags/style (`music4all_tags`)
 - **FastAPI Backend**: REST API with LangGraph-based orchestration
 - **React Frontend**: Clean UI for submitting queries and viewing results
@@ -21,8 +22,8 @@ music_mavern/
 │       └── services/api.js    # Axios API client
 ├── src/                       # Python backend
 │   ├── agents/
-│   │   ├── orchestrator.py    # LangGraph multi-agent workflow
-│   │   ├── query_router.py    # LLM-based query classification
+│   │   ├── orchestrator.py    # LangGraph multi-agent workflow (KG-enhanced)
+│   │   ├── query_router.py    # KG-aware local classifier + LLM fallback
 │   │   ├── sql_agent.py       # LangChain SQL agent
 │   │   └── vector_agent.py    # Dual-collection semantic search
 │   ├── api/
@@ -32,6 +33,9 @@ music_mavern/
 │   ├── data/
 │   │   ├── music4all_processor.py  # CSV → SQLite ingestion
 │   │   └── embedding_pipeline.py  # SQLite → Qdrant embeddings
+│   ├── knowledge_graph/
+│   │   ├── kg_builder.py      # SQLite → NetworkX graph construction
+│   │   └── kg_query_engine.py # Regex-template query resolution (zero LLM)
 │   ├── embeddings/            # Embedding model wrappers
 │   ├── search/                # Semantic search utilities
 │   ├── vectordb/              # Qdrant client + operations
@@ -82,13 +86,20 @@ python -m src.data.embedding_pipeline
 ```
 This creates two Qdrant collections (`music4all_lyrics`, `music4all_tags`) from the SQLite database. Takes ~20-40 minutes on CPU.
 
-### 5. Start the Backend
+### 5. Build the Knowledge Graph (run once)
+
+```bash
+python -m src.knowledge_graph.kg_builder
+```
+This reads the SQLite database and builds an in-memory NetworkX graph with Song, Artist, Genre, Language, Tag, and Tier nodes. The graph is serialized to `data/music4all_kg.gpickle` (~300MB) and loaded automatically on server startup. Use `--rebuild` to force regeneration.
+
+### 6. Start the Backend
 
 ```bash
 uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### 6. Start the Frontend
+### 7. Start the Frontend
 
 ```bash
 cd frontend
@@ -103,11 +114,12 @@ npm run dev
 
 ## Query Types
 
-The system automatically routes queries to the right agent(s):
+The system automatically routes queries to the right agent(s). Factual queries are answered instantly from the Knowledge Graph with zero LLM calls; semantic and complex queries fall through to SQL or Vector agents.
 
 | Type | Examples |
 |---|---|
-| **SQL** | "Top 10 songs by popularity", "Average tempo of hip-hop songs", "How many Portuguese songs are there?" |
+| **KG Direct** | "Top 10 artists", "How many songs are in Portuguese?", "Stats for Coldplay", "Compare Drake and Eminem", "Genre distribution", "Songs by Radiohead" |
+| **SQL** | "Average tempo of hip-hop songs", "Songs with energy above 0.9 sorted by popularity" |
 | **Vector** | "Songs with melancholic lyrics", "Music that feels like a road trip", "Songs similar to Bohemian Rhapsody" |
 | **Hybrid** | "High-energy songs about heartbreak with popularity above 70", "Fast tempo rock songs that feel melancholic" |
 
@@ -124,7 +136,8 @@ The system automatically routes queries to the right agent(s):
 |---|---|
 | Frontend | React 18, Vite, TailwindCSS, Axios, Lucide React |
 | Backend | FastAPI, LangChain, LangGraph, Pydantic |
-| LLM | OpenRouter (gpt-4o-mini for routing + SQL, configurable) |
+| LLM | OpenRouter (configurable, used only for SQL agent + hybrid synthesis) |
+| Knowledge Graph | NetworkX (in-memory directed graph with pre-computed aggregations) |
 | Vector DB | Qdrant (HNSW index, cosine similarity) |
 | SQL DB | SQLite |
 | Embeddings | `paraphrase-multilingual-MiniLM-L12-v2` (lyrics), `all-MiniLM-L6-v2` (tags) |

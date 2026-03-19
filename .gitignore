@@ -45,6 +45,7 @@ data/raw/*.csv
 data/raw/*.json
 data/processed/*.parquet
 data/processed/*.json
+data/*.gpickle
 qdrant_storage/
 
 # Logs

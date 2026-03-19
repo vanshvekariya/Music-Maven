@@ -121,7 +121,7 @@ async def process_query(request: QueryRequest):
         
         return QueryResponse(
             query=request.query,
-            answer=response.get('answer', 'No answer generated'),
+            answer=response.get('answer') or 'No answer generated',
             success=response.get('success', True),
             metadata=response.get('metadata'),
             results=response.get('results'),
@@ -174,24 +174,34 @@ async def get_example_queries():
     """Get example queries to help users understand the system capabilities"""
     return [
         ExampleQuery(
-            category="SQL",
+            category="KG (instant)",
             query="Who are the top 10 most popular artists?",
-            description="Rank artists by average Spotify popularity score"
+            description="Instant answer from Knowledge Graph (0 LLM calls)"
         ),
         ExampleQuery(
-            category="SQL",
-            query="Which artists have the most songs in the dataset?",
-            description="Count songs per artist"
+            category="KG (instant)",
+            query="How many songs are in English?",
+            description="Language count from Knowledge Graph"
+        ),
+        ExampleQuery(
+            category="KG (instant)",
+            query="Compare Queen and The Beatles",
+            description="Side-by-side artist comparison from Knowledge Graph"
+        ),
+        ExampleQuery(
+            category="KG (instant)",
+            query="What are the most common genres?",
+            description="Genre distribution from Knowledge Graph"
+        ),
+        ExampleQuery(
+            category="KG (instant)",
+            query="Songs by Queen",
+            description="Artist song list from Knowledge Graph"
         ),
         ExampleQuery(
             category="SQL",
             query="Find high-energy danceable songs with popularity above 70",
-            description="Filter by multiple Spotify audio features"
-        ),
-        ExampleQuery(
-            category="SQL",
-            query="How many songs are in each language?",
-            description="Count songs grouped by language code"
+            description="Complex multi-filter query via SQL agent"
         ),
         ExampleQuery(
             category="Vector",
@@ -210,13 +220,8 @@ async def get_example_queries():
         ),
         ExampleQuery(
             category="Hybrid",
-            query="High energy songs with popularity above 80",
-            description="Combine audio feature filters with semantic search"
-        ),
-        ExampleQuery(
-            category="Hybrid",
             query="Popular sad rock songs in English",
-            description="SQL language filter combined with mood-based lyric search"
+            description="KG structured filter + semantic mood search"
         ),
     ]
 

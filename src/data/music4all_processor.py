@@ -190,3 +190,8 @@ class Music4AllProcessor:
             conn.execute("CREATE INDEX IF NOT EXISTS idx_hist_song ON listening_history(song)")
 
         logger.info(f"`listening_history` table: {len(hist_df):,} rows written")
+
+
+if __name__ == "__main__":
+    processor = Music4AllProcessor()
+    processor.process()

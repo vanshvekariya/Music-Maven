@@ -1,6 +1,7 @@
 """Query Router for classifying and routing queries to appropriate agents"""
 
-from typing import Dict, Any, Literal, Optional
+import re
+from typing import Dict, Any, Literal, Optional, Set
 from enum import Enum
 
 from langchain_openai import ChatOpenAI
@@ -16,6 +17,7 @@ from ..config.settings import get_settings
 
 class QueryType(str, Enum):
     """Enum for query types"""
+    KG_DIRECT = "kg_direct"
     SQL = "sql"
     VECTOR = "vector"
     HYBRID = "hybrid"
@@ -365,3 +367,198 @@ class SimpleQueryRouter:
             'agents': agents_to_use,
             'execution_strategy': 'single_agent' if len(agents_to_use) == 1 else 'multi_agent_parallel'
         }
+
+
+class KGQueryRouter:
+    """
+    Enhanced local query classifier with KG entity recognition.
+
+    Routes queries into four categories with zero LLM calls:
+      KG_DIRECT  -- answerable from pre-computed KG data
+      SQL        -- needs the SQL agent (complex / novel queries)
+      VECTOR     -- semantic / mood / lyric search
+      HYBRID     -- structured + semantic (KG handles structured part)
+
+    Falls back to the LLM-based QueryRouter only when confidence is low.
+    """
+
+    # --- keyword lists ------------------------------------------------
+
+    SQL_KEYWORDS = [
+        'how many', 'count', 'total', 'average', 'avg', 'sum',
+        'top', 'bottom', 'most', 'least', 'highest', 'lowest',
+        'compare', 'comparison', 'statistics', 'stats', 'stat',
+        'number of', 'percentage', 'ratio', 'ranking', 'rank',
+        'distribution', 'popular', 'popularity', 'above', 'below',
+        'between', 'more than', 'less than', 'greater', 'faster',
+        'slower', 'which artist', 'which song',
+    ]
+
+    VECTOR_KEYWORDS = [
+        'feel', 'feeling', 'mood', 'vibe', 'vibes', 'similar to',
+        'sounds like', 'like a', 'reminds me', 'chill', 'upbeat',
+        'melancholic', 'melancholy', 'sad', 'happy', 'angry',
+        'nostalgic', 'romantic', 'dark', 'bright', 'dreamy',
+        'energetic', 'relaxing', 'intense', 'groovy', 'funky',
+        'lyrics about', 'lyric', 'songs about', 'song about',
+        'theme', 'meaning', 'road trip', 'workout', 'party',
+        'late night', 'summer', 'winter', 'heartbreak',
+        'love song', 'breakup',
+    ]
+
+    HYBRID_CONNECTORS = [
+        'and also', 'also find', 'also show', 'and suggest',
+        'and find', 'plus', 'and show', 'as well as',
+    ]
+
+    # Patterns that the KG query engine can resolve directly
+    KG_PATTERNS = [
+        re.compile(r'(?:top|best|most popular)\s*\d*\s*(?:most\s+popular\s+)?(?:artists?|songs?|genres?)'),
+        re.compile(r'(?:who\s+are\s+)?(?:the\s+)?most\s+popular\s+(?:artists?|songs?)'),
+        re.compile(r'(?:how\s+many|total|count)\s+(?:songs?|artists?|genres?|languages?)'),
+        re.compile(r'(?:how\s+many|number\s+of)\s+songs?\s+(?:in|are\s+in)\s+\w+'),
+        re.compile(r'(?:language|lang)\s*distribution'),
+        re.compile(r'songs?\s+(?:per|by|in\s+each)\s+(?:language|genre)'),
+        re.compile(r'genre\s*distribution'),
+        re.compile(r'(?:tell\s+me\s+about|info|stats?\s+(?:for|of|about))\s+.+'),
+        re.compile(r'songs?\s+(?:by|from|of)\s+.+'),
+        re.compile(r'which\s+artists?\s+(?:has|have)\s+(?:the\s+)?most\s+songs?'),
+        re.compile(r'(?:average|avg|mean)\s+\w+\s+(?:of|for|in)\s+.+'),
+        re.compile(r'songs?\s+with\s+\w+\s+(?:above|below|over|under|between|greater|less|higher|lower)\s+'),
+        re.compile(r'compare\s+.+\s+(?:and|vs\.?|versus)\s+.+'),
+        re.compile(r'what\s+genres?\s+does\s+.+'),
+        re.compile(r'(?:genres?\s+)?(?:related|similar)\s+(?:to|genres?)\s+.+'),
+        re.compile(r'popularity\s*distribution'),
+        re.compile(r'(?:global|overall|dataset|general)\s*(?:stats?|statistics|summary|overview)'),
+        re.compile(r'(?:what\s+are\s+)?(?:the\s+)?most\s+common\s+genres?'),
+    ]
+
+    def __init__(
+        self,
+        kg_engine=None,
+        artist_names: Optional[Set[str]] = None,
+        genre_names: Optional[Set[str]] = None,
+    ):
+        self._kg_engine = kg_engine
+        self._artist_names_lower = artist_names or set()
+        self._genre_names_lower = genre_names or set()
+        logger.info("KG Query Router initialized (local, zero-LLM)")
+
+    def classify_query(self, query: str) -> QueryClassification:
+        q = query.lower().strip()
+
+        # 1. Check if the KG engine can answer directly
+        if self._kg_engine is not None:
+            kg_result = self._kg_engine.try_answer(query)
+            if kg_result is not None:
+                return QueryClassification(
+                    query_type=QueryType.KG_DIRECT,
+                    confidence=0.95,
+                    reasoning=f"KG template matched: {kg_result['template']}",
+                    suggested_agent="kg_direct",
+                )
+
+        # 2. Check KG regex patterns (even without engine, to detect the type)
+        for pat in self.KG_PATTERNS:
+            if pat.search(q):
+                # Also check if mentions a known entity
+                has_entity = self._mentions_entity(q)
+                if has_entity:
+                    return QueryClassification(
+                        query_type=QueryType.KG_DIRECT,
+                        confidence=0.85,
+                        reasoning="Matches KG pattern and mentions a known entity",
+                        suggested_agent="kg_direct",
+                    )
+                return QueryClassification(
+                    query_type=QueryType.KG_DIRECT,
+                    confidence=0.80,
+                    reasoning="Matches a KG-answerable pattern",
+                    suggested_agent="kg_direct",
+                )
+
+        # 3. Keyword scoring
+        sql_score = sum(1 for kw in self.SQL_KEYWORDS if kw in q)
+        vector_score = sum(1 for kw in self.VECTOR_KEYWORDS if kw in q)
+
+        # Entity mentions boost SQL/KG score
+        if self._mentions_entity(q):
+            sql_score += 2
+
+        # Hybrid check
+        has_hybrid_connector = any(c in q for c in self.HYBRID_CONNECTORS)
+        has_both = sql_score > 0 and vector_score > 0
+
+        if has_hybrid_connector or has_both:
+            return QueryClassification(
+                query_type=QueryType.HYBRID,
+                confidence=0.80,
+                reasoning="Contains both analytical and semantic indicators",
+                suggested_agent="hybrid",
+            )
+
+        if sql_score > vector_score:
+            return QueryClassification(
+                query_type=QueryType.SQL,
+                confidence=min(0.85, 0.6 + sql_score * 0.05),
+                reasoning="Contains analytical/structured keywords",
+                suggested_agent="sql",
+            )
+
+        if vector_score > 0:
+            return QueryClassification(
+                query_type=QueryType.VECTOR,
+                confidence=min(0.85, 0.6 + vector_score * 0.05),
+                reasoning="Contains semantic/mood keywords",
+                suggested_agent="vector",
+            )
+
+        # Default to vector (exploratory)
+        return QueryClassification(
+            query_type=QueryType.VECTOR,
+            confidence=0.50,
+            reasoning="No strong indicators, defaulting to semantic search",
+            suggested_agent="vector",
+        )
+
+    def route_query(self, query: str) -> Dict[str, Any]:
+        classification = self.classify_query(query)
+
+        agents_map = {
+            QueryType.KG_DIRECT: ["kg_direct"],
+            QueryType.SQL: ["sql"],
+            QueryType.VECTOR: ["vector"],
+            QueryType.HYBRID: ["kg_direct", "vector"],
+            QueryType.UNKNOWN: [],
+        }
+        agents = agents_map.get(classification.query_type, [])
+
+        strategy_map = {
+            QueryType.KG_DIRECT: "kg_direct",
+            QueryType.SQL: "single_agent",
+            QueryType.VECTOR: "single_agent",
+            QueryType.HYBRID: "hybrid_kg_vector",
+            QueryType.UNKNOWN: "fallback",
+        }
+
+        return {
+            'query': query,
+            'classification': {
+                'type': classification.query_type.value,
+                'confidence': classification.confidence,
+                'reasoning': classification.reasoning,
+                'suggested_agent': classification.suggested_agent,
+            },
+            'agents': agents,
+            'execution_strategy': strategy_map.get(classification.query_type, "fallback"),
+        }
+
+    def _mentions_entity(self, q_lower: str) -> bool:
+        """Check if query mentions a known artist or genre."""
+        for name in self._artist_names_lower:
+            if name in q_lower:
+                return True
+        for name in self._genre_names_lower:
+            if name in q_lower:
+                return True
+        return False

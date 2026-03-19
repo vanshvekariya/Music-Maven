@@ -34,14 +34,20 @@
 - Vector search tested end-to-end via frontend
 - Cross-lingual retrieval confirmed — English queries return Portuguese, Spanish, Italian songs
 
-### Phase D — Not Started
-- Neo4j knowledge graph schema not yet designed
-- Artist–album–genre–tag relationship ingestion not built
-- Graph agent not implemented
+### Phase D — Complete
+- Knowledge graph built using NetworkX (in-memory directed graph, serialized to `data/music4all_kg.gpickle`)
+- Node types: Song (~109k), Artist (~16k), Genre (~853), Language, Tag, and Tier (popularity/energy/danceability/tempo buckets)
+- Relationship edges: `PERFORMED_BY`, `HAS_GENRE`, `IN_LANGUAGE`, `HAS_TAG`, `WORKS_IN_GENRE`, `SINGS_IN`, `RELATED_TO` (genre co-occurrence), `IN_*_TIER`
+- Pre-computed aggregations stored as graph-level attributes: artist/song/genre leaderboards, language distribution, global stats, entity lookup tables
+- KG Query Engine resolves 17+ template patterns via regex matching — zero LLM calls for factual queries
+- KG-aware router (`KGQueryRouter`) replaces the LLM router for classification — queries are routed locally using regex patterns, keyword scoring, and entity recognition
+- Orchestrator updated with `kg_agent` node in the LangGraph workflow; supports KG-direct, SQL, Vector, and hybrid (KG + Vector) execution paths
+- KG loads automatically on server startup via `load_or_build()` — rebuilds from SQLite if pickle is missing
 
 ### Phase E — In Progress
-- API and UI working for SQL and Vector queries
-- Hybrid routing operational (SQL + Vector agents both active)
+- API and UI working for SQL, Vector, and KG queries
+- Hybrid routing operational (KG + Vector, SQL + Vector)
+- KG-direct path handles factual queries with zero latency and zero LLM cost
 - **Remaining:** language filter for vector queries, report draft, subgroup plugin endpoints
 
 ### Future Phases
@@ -57,7 +63,7 @@
 | Layer | Description | Status |
 |---|---|---|
 | Layer 1 | SQL analytics, text embeddings, vector search, REST API, basic UI | **Complete** — SQL + vector search + API + UI all operational |
-| Layer 2 | Knowledge graph, hybrid retrieval, conversation memory, plugin endpoints | Not started |
+| Layer 2 | Knowledge graph, hybrid retrieval, conversation memory, plugin endpoints | **Partially complete** — KG built and integrated, hybrid KG+Vector routing operational. Conversation memory and plugin endpoints remaining |
 | Layer 3 | Session memory, caching, Docker, subgroup integration, performance | Not started |
 
 ---
@@ -92,11 +98,25 @@ Confirmed that the multilingual model maps French, English, Spanish, and Portugu
 
 **Known limitation:** language keywords in queries (e.g., "French sad songs") are not currently parsed as metadata filters — "French" is treated as semantic context, not a `lang=FR` filter. A fix is planned: detect language words in the Vector Agent and pass them as a Qdrant payload filter, so language-scoped vector searches work correctly.
 
-### 6. Qdrant API Upgrade
+### 6. Knowledge Graph
+
+A NetworkX directed graph is built from the SQLite database by `src/knowledge_graph/kg_builder.py`. The graph contains ~130k+ nodes across six types (Song, Artist, Genre, Language, Tag, Tier) and several hundred thousand edges encoding relationships like `PERFORMED_BY`, `HAS_GENRE`, `IN_LANGUAGE`, `HAS_TAG`, `WORKS_IN_GENRE`, `SINGS_IN`, `RELATED_TO` (genre co-occurrence), and tier membership edges (`IN_POPULARITY_TIER`, `IN_ENERGY_TIER`, etc.).
+
+Pre-computed aggregations (top artists by popularity, top songs, genre/language distributions, global stats, artist/genre/language lookup dictionaries) are stored as graph-level attributes (`G.graph[...]`) so the query engine can answer common questions in O(1) without traversing the graph at query time.
+
+The KG Query Engine (`src/knowledge_graph/kg_query_engine.py`) defines 17+ regex-based templates (e.g., "top N artists", "how many songs in X language", "compare artist A vs B", "songs with energy above N"). Each template is paired with a resolver function that traverses the graph and returns a formatted markdown answer. If no template matches, the query falls through to the SQL or Vector agent.
+
+The `KGQueryRouter` replaces the original LLM-based query router for classification. It first tries to match the query against the KG engine's templates; if that succeeds, the query is classified as `KG_DIRECT` and answered instantly. Otherwise, it uses keyword scoring and entity recognition (checking if the query mentions a known artist or genre from the graph's lookup tables) to route to SQL, Vector, or Hybrid.
+
+The orchestrator's LangGraph workflow was updated with a `kg_agent` node. The routing decision now supports five paths: `kg_direct` (KG only), `sql`, `vector`, `hybrid` (KG + Vector), and `both_sql_vector` (SQL + Vector). For hybrid KG+Vector queries, the KG handles the structured part and the Vector agent handles the semantic part, with results merged via template (no LLM synthesis needed).
+
+The graph is serialized to `data/music4all_kg.gpickle` and loaded on server startup. If the pickle file is missing, the graph is automatically rebuilt from SQLite. The pickle file is not committed to version control (added to `.gitignore`) since it can be regenerated with `python -m src.knowledge_graph.kg_builder`.
+
+### 7. Qdrant API Upgrade
 
 The installed Qdrant client (v1.16+) removed the `.search()` method in favour of `.query_points()`. Updated `src/vectordb/operations.py` accordingly. This is a good example of why pinning exact dependency versions in `requirements.txt` matters — a silent upgrade would have broken vector search.
 
-### 7. Codebase Cleanup and GitHub Push
+### 8. Codebase Cleanup and GitHub Push
 
 All YouTube-era files, scripts, and references were removed. The project was pushed to a new branch (`phase1-text-search`) on a remote GitHub repository, keeping the existing `main` branch untouched.
 

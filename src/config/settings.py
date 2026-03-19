@@ -42,6 +42,10 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     batch_size: int = 100
     
+    # Knowledge Graph Configuration
+    kg_pickle_path: str = "data/music4all_kg.gpickle"
+    kg_enable: bool = True
+
     # Vector Configuration
     vector_size: int = 384  # for all-MiniLM-L6-v2
     
