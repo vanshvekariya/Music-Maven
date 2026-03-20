@@ -1,0 +1,11 @@
+id,spotify_id,popularity,release,danceability,energy,key,mode,valence,tempo,duration_ms,artist,song,album_name,lang,genres,tags
+zzoFYDMlqU1X2zz1,3gQdNbXthE6QgYWaKrpY8J,32.0,2017,0.217,0.326,3.0,0.0,0.0395,78.423,138223,Thundercat,DUI,Drunk,en,"funk,electronic,soul,jazz","funk,electronic,soul,jazz,2017,psychedelic"
+zzm0WMJ14dzbttpm,15f32bWnmaGikPD9gN0Ke4,31.0,2003,0.332,0.921,10.0,0.0,0.221,122.76,386267,Placebo,I Feel You,Covers,en,"alternative rock,rock","cover,covers,alternative rock,alternative,rock"
+zzjzIS5AWk6uHtWX,3S6KYmAQkyU6PTyuXzp4PN,20.0,2011,0.527,0.326,1.0,0.0,0.216,142.0,230000,Blackfield,Rising of the Tide,Welcome to My DNA,en,"progressive rock,rock","progressive rock,rock,melancholic"
+zziWCQWVlwBURp9X,4elU36XAVPHYReonz6qqcR,34.0,2015,0.644,0.647,0.0,0.0,0.476,131.014,226541,Ellie Goulding,Devotion,Delirium (Deluxe),en,"electropop,house,electronic","electropop,house,love at first listen,beautiful,electronic,female vocalists,british"
+zziALZG1JQ2uUjcy,5KQY3KDpQ3tO29W7iJNfFq,37.0,1984,0.348,0.8290000000000001,9.0,0.0,0.368,136.681,333533,Judas Priest,Rock Hard Ride Free,Defenders Of The Faith,en,metal,"heavy metal,judas priest,metal,80s"
+zzgS4ZqyswamEWNj,2krkoAg7wvttl6aJBFZhQy,32.0,2000,0.6679999999999999,0.843,0.0,1.0,0.7020000000000001,147.083,255400,Britney Spears,My Only Wish (This Year),Platinum Christmas,en,pop,"christmas,pop,xmas,christmas music"
+zzd6MldtZHT1vWRb,6LhWdm4JRfsL2L6twjhjaG,29.0,1967,0.57,0.202,7.0,1.0,0.519,108.391,188202,Love,The Good Humor Man He Sees Everything Like This,Forever Changes (2015 Remastered Version),en,"classic rock,rock,psychedelic rock","60s,psychedelic,classic rock,rock,1967,psychedelic rock,psychedelic,60s"
+zzcuWicshRqankev,2a2le1M7cmvdrg1QHH7H53,47.0,1986,0.264,0.931,4.0,0.0,0.414,90.246,496627,Metallica,Disposable Heroes,Master of Puppets (Remastered Deluxe Box Set),en,"thrash metal,metal","thrash metal,metal,heavy metal,metallica"
+zzbrm6nHm8grTZeF,0d0tJF80562KcMndcBcSfM,48.0,2009,0.416,0.354,0.0,1.0,0.181,80.767,268560,Carrie Underwood,Temporary Home,Play On,en,country,"country,carrie underwood,female vocalists,ballads"
+zzT504Z94j1IAuc3,2BdE6Ih677GJywXM0pF1kd,35.0,2011,0.6679999999999999,0.868,0.0,0.0,0.316,127.86,233960,Bombay Bicycle Club,Leave It,A Different Kind Of Fix,en,indie rock,"indie rock,british"
