@@ -1,0 +1,117 @@
+[
+  {
+    "file_path": "data\\test_audio\\complex_128bpm.wav",
+    "sample_rate": 22050,
+    "duration_seconds": 15.0,
+    "waveform_samples": 330750,
+    "spectrogram_shape": [
+      128,
+      646
+    ],
+    "n_mels": 128,
+    "time_frames": 646,
+    "processing_time_seconds": 0.047,
+    "config": {
+      "sr": 22050,
+      "n_fft": 2048,
+      "hop_length": 512,
+      "n_mels": 128,
+      "fmin": 20.0,
+      "fmax": 8000.0,
+      "normalized": true
+    },
+    "saved_to": "output\\spectrograms\\complex_128bpm_mel.npy"
+  },
+  {
+    "file_path": "data\\test_audio\\drums_100bpm.wav",
+    "sample_rate": 22050,
+    "duration_seconds": 10.0,
+    "waveform_samples": 220500,
+    "spectrogram_shape": [
+      128,
+      431
+    ],
+    "n_mels": 128,
+    "time_frames": 431,
+    "processing_time_seconds": 0.019,
+    "config": {
+      "sr": 22050,
+      "n_fft": 2048,
+      "hop_length": 512,
+      "n_mels": 128,
+      "fmin": 20.0,
+      "fmax": 8000.0,
+      "normalized": true
+    },
+    "saved_to": "output\\spectrograms\\drums_100bpm_mel.npy"
+  },
+  {
+    "file_path": "data\\test_audio\\fast_180bpm.wav",
+    "sample_rate": 22050,
+    "duration_seconds": 10.0,
+    "waveform_samples": 220500,
+    "spectrogram_shape": [
+      128,
+      431
+    ],
+    "n_mels": 128,
+    "time_frames": 431,
+    "processing_time_seconds": 0.017,
+    "config": {
+      "sr": 22050,
+      "n_fft": 2048,
+      "hop_length": 512,
+      "n_mels": 128,
+      "fmin": 20.0,
+      "fmax": 8000.0,
+      "normalized": true
+    },
+    "saved_to": "output\\spectrograms\\fast_180bpm_mel.npy"
+  },
+  {
+    "file_path": "data\\test_audio\\sine_120bpm.wav",
+    "sample_rate": 22050,
+    "duration_seconds": 10.0,
+    "waveform_samples": 220500,
+    "spectrogram_shape": [
+      128,
+      431
+    ],
+    "n_mels": 128,
+    "time_frames": 431,
+    "processing_time_seconds": 0.043,
+    "config": {
+      "sr": 22050,
+      "n_fft": 2048,
+      "hop_length": 512,
+      "n_mels": 128,
+      "fmin": 20.0,
+      "fmax": 8000.0,
+      "normalized": true
+    },
+    "saved_to": "output\\spectrograms\\sine_120bpm_mel.npy"
+  },
+  {
+    "file_path": "data\\test_audio\\slow_60bpm.wav",
+    "sample_rate": 22050,
+    "duration_seconds": 10.0,
+    "waveform_samples": 220500,
+    "spectrogram_shape": [
+      128,
+      431
+    ],
+    "n_mels": 128,
+    "time_frames": 431,
+    "processing_time_seconds": 0.025,
+    "config": {
+      "sr": 22050,
+      "n_fft": 2048,
+      "hop_length": 512,
+      "n_mels": 128,
+      "fmin": 20.0,
+      "fmax": 8000.0,
+      "normalized": true
+    },
+    "saved_to": "output\\spectrograms\\slow_60bpm_mel.npy"
+  }
+]
