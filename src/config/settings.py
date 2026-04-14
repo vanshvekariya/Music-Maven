@@ -48,6 +48,11 @@ class Settings(BaseSettings):
 
     # Vector Configuration
     vector_size: int = 384  # for all-MiniLM-L6-v2
+
+    # Subgroup plugins — full POST target URL (including path) per module; empty = not configured
+    plugin_tempo_url: Optional[str] = None
+    plugin_artist_classifier_url: Optional[str] = None
+    plugin_lyrics_url: Optional[str] = None
     
     model_config = SettingsConfigDict(
         env_file=".env",

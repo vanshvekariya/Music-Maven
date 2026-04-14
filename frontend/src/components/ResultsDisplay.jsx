@@ -74,6 +74,16 @@ export function ResultsDisplay({ response }) {
               ))}
             </div>
           )}
+          {metadata.conversation_memory && (
+            <Badge variant="outline" className="text-xs">
+              Memory: rolling summary
+              {metadata.memory_summarization && (
+                <span className="ml-1 opacity-80">
+                  ({metadata.memory_summarization === 'llm' ? 'LLM' : 'fallback'})
+                </span>
+              )}
+            </Badge>
+          )}
           {metadata.confidence !== undefined && (
             <Badge variant="outline">
               <TrendingUp className="h-3 w-3 mr-1" />

@@ -7,7 +7,32 @@ from pydantic import BaseModel, Field
 class QueryRequest(BaseModel):
     """Request model for query endpoint"""
     query: str = Field(..., description="Natural language query", min_length=1)
-    max_results: Optional[int] = Field(10, description="Maximum number of results", ge=1, le=100)
+    max_results: Optional[int] = Field(10, description="Maximum vector hits (orchestrator passes to vector agent)", ge=1, le=100)
+    use_kg: Optional[bool] = Field(
+        True,
+        description="Whether to allow Knowledge Graph direct routing (true by default)",
+    )
+    lang_filter: Optional[str] = Field(
+        None,
+        description="Optional ISO-style language code (e.g. en, pt, fr) for Qdrant payload filter on vector search",
+    )
+    session_id: Optional[str] = Field(
+        None,
+        description="Optional client session id for multi-turn memory (in-memory on server; omit to disable)",
+        max_length=128,
+    )
+    memory_turns: Optional[int] = Field(
+        5,
+        description="Set to 0 to disable session memory. Any value > 0 enables rolling summarized memory (budget uses memory_max_chars).",
+        ge=0,
+        le=30,
+    )
+    memory_max_chars: Optional[int] = Field(
+        2000,
+        description="Max characters for stored rolling summary and injected context (~500 tokens); summarizer compresses each turn to stay within this.",
+        ge=0,
+        le=8000,
+    )
 
 
 class QueryResponse(BaseModel):

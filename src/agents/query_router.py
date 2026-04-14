@@ -392,7 +392,17 @@ class KGQueryRouter:
         'distribution', 'popular', 'popularity', 'above', 'below',
         'between', 'more than', 'less than', 'greater', 'faster',
         'slower', 'which artist', 'which song',
+        'distinct', 'unique', 'duplicate', 'dedupe', 'group by',
     ]
+
+    # Short follow-ups after a ranked list (KG/SQL) — do not send to vector search
+    _CONTINUATION_RE = re.compile(
+        r"(?:^|\s)(?:give|show|get|list)\s+(?:me\s+)?(?:the\s+)?(?:next\s+)?\d*\s*more\b"
+        r"|\b\d+\s+more\b"
+        r"|\b(?:more|next|another)\s+(?:please|results?|artists?|songs?|tracks?|genres?)\b"
+        r"|\b(?:and\s+)?(?:the\s+)?next\s+\d+\b",
+        re.IGNORECASE,
+    )
 
     VECTOR_KEYWORDS = [
         'feel', 'feeling', 'mood', 'vibe', 'vibes', 'similar to',
@@ -421,7 +431,7 @@ class KGQueryRouter:
         re.compile(r'songs?\s+(?:per|by|in\s+each)\s+(?:language|genre)'),
         re.compile(r'genre\s*distribution'),
         re.compile(r'(?:tell\s+me\s+about|info|stats?\s+(?:for|of|about))\s+.+'),
-        re.compile(r'songs?\s+(?:by|from|of)\s+.+'),
+        re.compile(r'(?!.*\b(?:average|avg|mean|total|count|sum|how many|number of)\b)songs?\s+(?:by|from|of)\s+.+'),
         re.compile(r'which\s+artists?\s+(?:has|have)\s+(?:the\s+)?most\s+songs?'),
         re.compile(r'(?:average|avg|mean)\s+\w+\s+(?:of|for|in)\s+.+'),
         re.compile(r'songs?\s+with\s+\w+\s+(?:above|below|over|under|between|greater|less|higher|lower)\s+'),
@@ -444,19 +454,46 @@ class KGQueryRouter:
         self._genre_names_lower = genre_names or set()
         logger.info("KG Query Router initialized (local, zero-LLM)")
 
+    _AGGREGATE_WORDS = re.compile(
+        r'\b(?:average|avg|mean|sum|total|count\s+of|how\s+many|number\s+of|percentage|ratio)\b'
+    )
+    _AGGREGATE_TEMPLATES = frozenset({
+        'average_feature', 'count_entities', 'songs_in_language',
+        'global_stats', 'language_distribution', 'genre_distribution',
+        'popularity_distribution', 'artists_by_song_count',
+    })
+
     def classify_query(self, query: str) -> QueryClassification:
         q = query.lower().strip()
+
+        # 0. Continuation / pagination phrasing → SQL (KG has no OFFSET; vector would misinterpret)
+        if self._CONTINUATION_RE.search(query):
+            return QueryClassification(
+                query_type=QueryType.SQL,
+                confidence=0.88,
+                reasoning="Continuation request (e.g. 'more', 'next 10') — route to SQL with context",
+                suggested_agent="sql",
+            )
 
         # 1. Check if the KG engine can answer directly
         if self._kg_engine is not None:
             kg_result = self._kg_engine.try_answer(query)
             if kg_result is not None:
-                return QueryClassification(
-                    query_type=QueryType.KG_DIRECT,
-                    confidence=0.95,
-                    reasoning=f"KG template matched: {kg_result['template']}",
-                    suggested_agent="kg_direct",
-                )
+                template = kg_result.get('template', '')
+                wants_aggregate = self._AGGREGATE_WORDS.search(q)
+                is_aggregate_template = template in self._AGGREGATE_TEMPLATES
+
+                if wants_aggregate and not is_aggregate_template:
+                    logger.info(
+                        f"KG matched '{template}' but query wants an aggregate — skipping KG, routing to SQL"
+                    )
+                else:
+                    return QueryClassification(
+                        query_type=QueryType.KG_DIRECT,
+                        confidence=0.95,
+                        reasoning=f"KG template matched: {template}",
+                        suggested_agent="kg_direct",
+                    )
 
         # 2. Check KG regex patterns (even without engine, to detect the type)
         for pat in self.KG_PATTERNS:

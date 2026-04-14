@@ -16,6 +16,9 @@ from .models import (
     HealthResponse,
     ExampleQuery
 )
+from .plugins import router as plugins_router, plugins_configured_map
+from .conversation_store import get_conversation_store
+from .conversation_summarizer import update_rolling_summary
 from ..main import MusicMavenApp
 from ..config.settings import get_settings
 
@@ -60,6 +63,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(plugins_router)
+
 
 @app.get("/", tags=["Root"])
 async def root():
@@ -101,29 +106,77 @@ async def process_query(request: QueryRequest):
     Process a natural language query about the Music4All dataset.
 
     The system will automatically route your query to the appropriate agent(s):
+    - KG Agent: For common factual queries (instant, zero LLM calls)
     - SQL Agent: For analytical queries (stats, counts, audio features, aggregations)
-    - Vector Agent: For semantic/lyric search (Phase 2 — not yet active)
-    - Hybrid: For queries requiring both capabilities (Phase 2)
+    - Vector Agent: For semantic/lyric search (mood, theme, similarity)
+    - Hybrid: For queries requiring both structured and semantic capabilities
     """
     if not app_instance:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Application not initialized"
         )
-    
+
+    start_time = time.time()
     try:
-        start_time = time.time()
-        
         logger.info(f"Processing query: {request.query}")
-        response = app_instance.query(request.query)
-        
+        lang = (request.lang_filter or "").strip().lower() or None
+        memory_turns = request.memory_turns if request.memory_turns is not None else 5
+        memory_max_chars = request.memory_max_chars if request.memory_max_chars is not None else 2000
+
+        store = get_conversation_store()
+        conversation_context = None
+        if request.session_id and memory_turns > 0 and memory_max_chars > 0:
+            prev_summary = store.get_summary(request.session_id.strip())
+            if prev_summary:
+                conversation_context = prev_summary[:memory_max_chars]
+
+        response = app_instance.query(
+            request.query,
+            max_results=request.max_results or 10,
+            lang_filter=lang,
+            use_kg=bool(request.use_kg if request.use_kg is not None else True),
+            conversation_context=conversation_context,
+        )
+
         processing_time = time.time() - start_time
-        
+
+        answer = response.get('answer') or 'No answer generated'
+        success = response.get('success', True)
+
+        if not success and not answer.startswith("Error:"):
+            answer = response.get('error') or answer
+
+        meta = dict(response.get('metadata') or {})
+        if request.session_id and memory_turns > 0 and memory_max_chars > 0:
+            meta['conversation_memory'] = True
+            meta['memory_turns'] = memory_turns
+            meta['memory_max_chars'] = memory_max_chars
+            meta['memory_mode'] = 'rolling_summary'
+            if conversation_context:
+                meta['conversation_context_injected'] = True
+            else:
+                meta['conversation_context_injected'] = False
+        else:
+            meta['conversation_memory'] = False
+
+        if request.session_id and memory_turns > 0 and memory_max_chars > 0:
+            sid = request.session_id.strip()
+            prev = store.get_summary(sid)
+            new_summary, sum_mode = update_rolling_summary(
+                prev,
+                request.query,
+                answer,
+                max_output_chars=memory_max_chars,
+            )
+            store.set_summary(sid, new_summary, max_stored=memory_max_chars)
+            meta['memory_summarization'] = sum_mode
+
         return QueryResponse(
             query=request.query,
-            answer=response.get('answer') or 'No answer generated',
-            success=response.get('success', True),
-            metadata=response.get('metadata'),
+            answer=answer,
+            success=success,
+            metadata=meta,
             results=response.get('results'),
             error=response.get('error'),
             processing_time=processing_time
@@ -131,9 +184,12 @@ async def process_query(request: QueryRequest):
     
     except Exception as e:
         logger.error(f"Query processing failed: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Query processing failed: {str(e)}"
+        return QueryResponse(
+            query=request.query,
+            answer="Something went wrong processing your query. Please try again or rephrase.",
+            success=False,
+            error=str(e),
+            processing_time=time.time() - start_time,
         )
 
 
@@ -157,7 +213,8 @@ async def get_system_info():
                 'sql_database': settings.sql_db_path,
                 'vector_db': f"Qdrant ({settings.qdrant_host}:{settings.qdrant_port})",
                 'embedding_model (tags)': settings.local_embedding_model,
-                'embedding_model (lyrics)': settings.lyric_embedding_model
+                'embedding_model (lyrics)': settings.lyric_embedding_model,
+                'subgroup_plugins_configured': plugins_configured_map(),
             }
         )
     
@@ -167,6 +224,13 @@ async def get_system_info():
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get system info: {str(e)}"
         )
+
+
+@app.delete("/conversation/{session_id}", tags=["Conversation"])
+async def clear_conversation(session_id: str):
+    """Drop stored turns for a session (in-memory; no-op if unknown)."""
+    get_conversation_store().clear(session_id)
+    return {"ok": True, "session_id": session_id}
 
 
 @app.get("/examples", response_model=List[ExampleQuery], tags=["Examples"])
@@ -200,7 +264,7 @@ async def get_example_queries():
         ),
         ExampleQuery(
             category="SQL",
-            query="Find high-energy danceable songs with popularity above 70",
+            query="Show top 10 genres by number of distinct artists.",
             description="Complex multi-filter query via SQL agent"
         ),
         ExampleQuery(

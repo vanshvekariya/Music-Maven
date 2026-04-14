@@ -11,7 +11,8 @@ Query types handled:
   - Similar song queries  → searches both, merges by score
 """
 
-from typing import Dict, Any, List, Optional
+import re
+from typing import Dict, Any, List, Optional, Tuple
 
 import numpy as np
 from loguru import logger
@@ -21,6 +22,49 @@ from .base_agent import BaseAgent
 from src.config.settings import get_settings
 from src.vectordb.client import QdrantManager
 from src.vectordb.operations import VectorDBOperations
+
+# English name → Music4All `lang` column code (see dataset / KG language map)
+_LANG_NAME_TO_CODE: Tuple[Tuple[str, str], ...] = (
+    ("portuguese", "pt"),
+    ("brazilian", "pt"),
+    ("spanish", "es"),
+    ("french", "fr"),
+    ("german", "de"),
+    ("italian", "it"),
+    ("korean", "ko"),
+    ("japanese", "ja"),
+    ("chinese", "zh"),
+    ("indonesian", "id"),
+    ("turkish", "tr"),
+    ("finnish", "fi"),
+    ("dutch", "nl"),
+    ("polish", "pl"),
+    ("swedish", "sv"),
+    ("russian", "ru"),
+    ("arabic", "ar"),
+    ("hindi", "hi"),
+    ("thai", "th"),
+    ("vietnamese", "vi"),
+    ("english", "en"),
+    ("instrumental", "INTRUMENTAL"),  # dataset spelling
+)
+
+
+def infer_lang_filter_from_query(query: str) -> Optional[str]:
+    """
+    Best-effort: detect a language name in the user query and map to `songs.lang` code.
+
+    Longer phrases are checked first. False positives are possible; prefer explicit API lang_filter.
+    """
+    ql = query.lower()
+    for name, code in sorted(_LANG_NAME_TO_CODE, key=lambda x: -len(x[0])):
+        if re.search(rf"(?<![a-z0-9]){re.escape(name)}(?![a-z0-9])", ql):
+            return code
+    # bare ISO2 at end or after "lang" e.g. "songs in pt"
+    m = re.search(r"\b(?:lang|language)\s*(?:=|:)?\s*([a-z]{2})\b", ql)
+    if m:
+        return m.group(1).lower()
+    return None
 
 
 class VectorAgent(BaseAgent):
@@ -56,13 +100,20 @@ class VectorAgent(BaseAgent):
     # BaseAgent interface
     # ----------------------------------------------------------------------- #
 
-    def process_query(self, query: str, **kwargs) -> Dict[str, Any]:
+    def process_query(
+        self,
+        query: str,
+        conversation_context: Optional[str] = None,
+        **kwargs,
+    ) -> Dict[str, Any]:
         """
         Route the query to the right collection(s) and return results.
 
         Strategy:
           - Default: search tags (fast, works for most music queries)
           - If query contains lyric-mood keywords: also search lyrics, merge results
+        Routing keywords are detected on the *current* query only; optional
+        conversation_context is concatenated for the embedding text only.
         """
         if not self.validate_query(query):
             return self.format_response(
@@ -82,25 +133,35 @@ class VectorAgent(BaseAgent):
             }
             use_lyrics = any(kw in query.lower() for kw in lyric_keywords)
 
+            embed_query = query
+            if conversation_context and conversation_context.strip():
+                embed_query = (
+                    f"Prior conversation:\n{conversation_context.strip()}\n\n"
+                    f"Current question: {query}"
+                )
+            max_embed_chars = 2500
+            if len(embed_query) > max_embed_chars:
+                embed_query = embed_query[-max_embed_chars:]
+
             if use_lyrics:
-                results = self._search_both(query, limit=limit, filters=filters)
+                results = self._search_both(embed_query, limit=limit, filters=filters)
                 source = "lyrics + tags"
             else:
-                results = self._search_tags(query, limit=limit, filters=filters)
+                results = self._search_tags(embed_query, limit=limit, filters=filters)
                 source = "tags"
 
             if not results:
                 return self.format_response(
                     success=True,
                     data={"answer": "No matching songs found. Try rephrasing your query.", "results": []},
-                    metadata={"source": source, "count": 0},
+                    metadata={"source": source, "count": 0, "filters": filters},
                 )
 
-            answer = self._format_answer(query, results)
+            answer = self._format_answer(query, results, filters=filters)
             return self.format_response(
                 success=True,
                 data={"answer": answer, "results": results},
-                metadata={"source": source, "count": len(results)},
+                metadata={"source": source, "count": len(results), "filters": filters},
             )
 
         except Exception as e:
@@ -266,12 +327,21 @@ class VectorAgent(BaseAgent):
         return model.encode(text, normalize_embeddings=True)
 
     @staticmethod
-    def _format_answer(query: str, results: List[Dict[str, Any]]) -> str:
+    def _format_answer(
+        query: str,
+        results: List[Dict[str, Any]],
+        filters: Optional[Dict[str, Any]] = None,
+    ) -> str:
         """Format search results as a markdown answer string."""
         if not results:
             return "No matching songs found."
 
-        lines = [f"Here are songs matching **{query}**:\n"]
+        lines = []
+        if filters and filters.get("lang"):
+            lines.append(
+                f"*Language filter:* `{filters['lang']}` (Qdrant payload match on `lang`)\n"
+            )
+        lines.append(f"Here are songs matching **{query}**:\n")
         for r in results:
             name   = r.get("song_name") or r.get("metadata", {}).get("song_name", "Unknown")
             artist = r.get("artist")    or r.get("metadata", {}).get("artist", "Unknown")

@@ -13,6 +13,39 @@ from .base_agent import BaseAgent
 from ..config.settings import get_settings
 
 
+# LangChain passes every sql_db_query result string back into the LLM; a broad SELECT
+# can return hundreds of thousands of rows and exceed the model context (see OpenRouter
+# "maximum context length" errors). Cap each tool result so the agent can recover.
+class BoundedSQLDatabase(SQLDatabase):
+    """SQLDatabase that truncates oversized query result strings."""
+
+    MAX_QUERY_RESULT_CHARS = 14_000
+
+    def run_no_throw(
+        self,
+        command: str,
+        fetch="all",
+        include_columns: bool = False,
+        *,
+        parameters=None,
+        execution_options=None,
+    ):
+        out = super().run_no_throw(
+            command,
+            fetch=fetch,
+            include_columns=include_columns,
+            parameters=parameters,
+            execution_options=execution_options,
+        )
+        if isinstance(out, str) and len(out) > self.MAX_QUERY_RESULT_CHARS:
+            return (
+                out[: self.MAX_QUERY_RESULT_CHARS]
+                + "\n\n[TRUNCATED: result too large for the model. Rewrite SQL with a "
+                "tighter WHERE and/or LIMIT (e.g. LIMIT 100).]"
+            )
+        return out
+
+
 class SQLAgent(BaseAgent):
     """
     SQL Agent that converts natural language queries to SQL and executes them.
@@ -66,7 +99,7 @@ class SQLAgent(BaseAgent):
                 f"Please run the data processing pipeline first."
             )
         
-        self.db = SQLDatabase.from_uri(f"sqlite:///{self.db_path}")
+        self.db = BoundedSQLDatabase.from_uri(f"sqlite:///{self.db_path}")
         logger.info(f"Connected to database: {self.db_path}")
     
     def _initialize_llm(self) -> None:
@@ -89,40 +122,42 @@ Database: {self.db_path}
 Table: {self.table_name}
 
 IMPORTANT - EXACT COLUMN NAMES (use these exactly as shown):
-┌──────────────────┬──────────────────────────────────────────────────────────┐
-│ Column Name      │ Description                                              │
-├──────────────────┼──────────────────────────────────────────────────────────┤
-│ song_id          │ Unique song identifier (TEXT)                            │
-│ artist           │ Artist name (TEXT)                                       │
-│ song_name        │ Song title (TEXT)                                        │
-│ album            │ Album name (TEXT)                                        │
-│ lang             │ Language of lyrics, e.g. "en", "es" (TEXT)              │
-│ spotify_id       │ Spotify track identifier (TEXT)                          │
-│ popularity       │ Spotify popularity score 0-100 (INTEGER)                 │
-│ danceability     │ Danceability score 0.0-1.0 (REAL)                       │
-│ energy           │ Energy score 0.0-1.0 (REAL)                             │
-│ key              │ Musical key 0-11 (INTEGER)                               │
-│ loudness         │ Loudness in dB (REAL)                                    │
-│ mode             │ 1=major, 0=minor (INTEGER)                               │
-│ speechiness      │ Speechiness score 0.0-1.0 (REAL)                        │
-│ acousticness     │ Acousticness score 0.0-1.0 (REAL)                       │
-│ instrumentalness │ Instrumentalness score 0.0-1.0 (REAL)                   │
-│ liveness         │ Liveness score 0.0-1.0 (REAL)                           │
-│ valence          │ Musical positiveness 0.0-1.0 (REAL)                     │
-│ tempo            │ Tempo in BPM (REAL)                                      │
-│ duration_ms      │ Track duration in milliseconds (INTEGER)                 │
-│ time_signature   │ Time signature (INTEGER)                                 │
-│ tags             │ Comma-separated user tags (TEXT)                         │
-│ genres           │ Comma-separated genres (TEXT)                            │
-│ audio_path       │ Path to 30-second audio clip (TEXT)                     │
-│ has_lyrics       │ 1 if lyrics file exists, 0 otherwise (INTEGER)          │
-└──────────────────┴──────────────────────────────────────────────────────────┘
+┌──────────────┬──────────────────────────────────────────────────────────┐
+│ Column Name  │ Description                                              │
+├──────────────┼──────────────────────────────────────────────────────────┤
+│ song_id      │ Unique song identifier (TEXT)                            │
+│ artist       │ Artist name (TEXT)                                       │
+│ song_name    │ Song title (TEXT)                                        │
+│ album        │ Album name (TEXT)                                        │
+│ lang         │ Language of lyrics, e.g. "en", "es" (TEXT)              │
+│ spotify_id   │ Spotify track identifier (TEXT)                          │
+│ popularity   │ Spotify popularity score 0-100 (REAL)                    │
+│ release      │ Release year (INTEGER)                                   │
+│ danceability │ Danceability score 0.0-1.0 (REAL)                       │
+│ energy       │ Energy score 0.0-1.0 (REAL)                             │
+│ key          │ Musical key 0-11 (REAL)                                  │
+│ mode         │ 1=major, 0=minor (REAL)                                  │
+│ valence      │ Musical positiveness 0.0-1.0 (REAL)                     │
+│ tempo        │ Tempo in BPM (REAL)                                      │
+│ duration_ms  │ Track duration in milliseconds (INTEGER)                 │
+│ tags         │ Comma-separated user tags (TEXT)                         │
+│ genres       │ Comma-separated genres (TEXT)                            │
+│ has_lyrics   │ 1 if lyrics file exists, 0 otherwise (INTEGER)          │
+└──────────────┴──────────────────────────────────────────────────────────┘
 
 ⚠️ CRITICAL COLUMN NAME MAPPINGS:
 - For SPOTIFY ID: Use "spotify_id" NOT "spotifyid" or "spotify_track_id"
 - For SONG TITLE: Use "song_name" NOT "title" or "name"
 - For LANGUAGE: Use "lang" NOT "language"
 - For MUSICAL KEY MODE: Use "mode" (1=major, 0=minor) NOT "key_mode"
+- For RELEASE YEAR: Use "release" NOT "year" or "release_date"
+- These columns do NOT exist: loudness, speechiness, acousticness, instrumentalness, liveness, time_signature, audio_path
+
+QUERY SAFETY (non-negotiable):
+- Broad SELECTs MUST include LIMIT (start with LIMIT 100; use LIMIT 20–50 for "top N" lists).
+- Never scan the whole table without LIMIT unless the user explicitly asks for a full export.
+- For unique song titles: use DISTINCT song_name or GROUP BY song_name (plus artist filter if needed), always with LIMIT.
+- If tool output was truncated, rewrite SQL to be narrower (WHERE + LIMIT), do not repeat the huge query.
 
 COMMON QUERY PATTERNS:
 1. Top artists by popularity: SELECT artist, AVG(popularity) AS avg_pop FROM songs GROUP BY artist ORDER BY avg_pop DESC LIMIT N;
@@ -180,21 +215,28 @@ If you encounter a "no such column" error, check the column names table above an
             verbose=True,
             handle_parsing_errors=True,
             prefix=prefix,
-            max_iterations=15,
+            top_k=50,
+            max_iterations=12,
             agent_executor_kwargs={
                 "handle_parsing_errors": True
             }
         )
         logger.info("SQL Agent executor initialized")
     
-    def process_query(self, query: str, **kwargs) -> Dict[str, Any]:
+    def process_query(
+        self,
+        query: str,
+        conversation_context: Optional[str] = None,
+        **kwargs,
+    ) -> Dict[str, Any]:
         """
         Process a natural language query using SQL.
-        
+
         Args:
-            query: Natural language query
+            query: Natural language query (used for routing elsewhere; keep as the current turn)
+            conversation_context: Optional prior transcript for follow-up questions (SQL agent only)
             **kwargs: Additional parameters
-            
+
         Returns:
             Formatted response with results
         """
@@ -203,12 +245,25 @@ If you encounter a "no such column" error, check the column names table above an
                 success=False,
                 error="Invalid query: Query cannot be empty"
             )
-        
+
+        # Hard cap: rolling summary should be small, but never trust unbounded input.
+        max_ctx = 3_500
+        agent_input = query
+        if conversation_context and conversation_context.strip():
+            ctx = conversation_context.strip()
+            if len(ctx) > max_ctx:
+                ctx = ctx[:max_ctx] + "\n[...truncated...]"
+            agent_input = (
+                "Prior conversation (for context only; answer using the database):\n"
+                f"{ctx}\n\n"
+                f"Current user question:\n{query}"
+            )
+
         try:
             logger.info(f"Processing SQL query: {query}")
-            
+
             # Invoke the agent
-            response = self.agent_executor.invoke({"input": query})
+            response = self.agent_executor.invoke({"input": agent_input})
             
             # Extract output
             output = response.get("output", "I'm sorry, I couldn't find an answer.")

@@ -9,7 +9,7 @@ from langchain_openai import ChatOpenAI
 from loguru import logger
 
 from .sql_agent import SQLAgent
-from .vector_agent import VectorAgent
+from .vector_agent import VectorAgent, infer_lang_filter_from_query
 from .query_router import QueryRouter, KGQueryRouter, QueryType
 from ..config.settings import get_settings
 
@@ -27,6 +27,10 @@ class AgentState(TypedDict):
     final_response: Optional[str]
     error: Optional[str]
     metadata: Dict[str, Any]
+    max_results: int
+    lang_filter: Optional[str]
+    use_kg: bool
+    conversation_context: Optional[str]
 
 
 class WorkflowStage(str, Enum):
@@ -162,7 +166,7 @@ class MultiAgentOrchestrator:
                 "vector": "vector_agent",
                 "hybrid": "kg_agent",
                 "both_sql_vector": "sql_agent",
-                "end": END,
+                "end": "synthesize",
             }
         )
 
@@ -198,6 +202,21 @@ class MultiAgentOrchestrator:
         logger.info(f"Routing query: {state['query']}")
         try:
             routing_info = self.router.route_query(state['query'])
+            # UI/API override to disable KG for SQL/vector testing.
+            if not state.get("use_kg", True):
+                original_agents = routing_info.get("agents", [])
+                filtered_agents = [a for a in original_agents if a != "kg_direct"]
+
+                # If KG was the only route, fall back to non-KG agents.
+                if not filtered_agents:
+                    if self.enable_sql and "sql" in self.agents:
+                        filtered_agents = ["sql"]
+                        routing_info["classification"]["type"] = "sql"
+                    elif self.enable_vector and "vector" in self.agents:
+                        filtered_agents = ["vector"]
+                        routing_info["classification"]["type"] = "vector"
+
+                routing_info["agents"] = filtered_agents
             state['routing_info'] = routing_info
             logger.info(
                 f"Query routed to: {routing_info['agents']} "
@@ -298,7 +317,10 @@ class MultiAgentOrchestrator:
                     query = self._extract_sql_query(state['query'])
                     logger.info(f"Extracted SQL query: {query}")
 
-                result = self.agents['sql'].process_query(query)
+                result = self.agents['sql'].process_query(
+                    query,
+                    conversation_context=state.get("conversation_context"),
+                )
                 state['sql_result'] = result
                 logger.info("SQL Agent execution complete")
             else:
@@ -332,7 +354,23 @@ class MultiAgentOrchestrator:
                     query = self._extract_vector_query_local(state['query'])
                     logger.info(f"Extracted Vector query (local): {query}")
 
-                result = self.agents['vector'].process_query(query)
+                limit = max(1, min(int(state.get("max_results") or 10), 100))
+                filters: Dict[str, Any] = {}
+                explicit = state.get("lang_filter")
+                if explicit:
+                    filters["lang"] = explicit
+                else:
+                    hinted = infer_lang_filter_from_query(state["query"])
+                    if hinted:
+                        filters["lang"] = hinted
+                        logger.info(f"Vector search: inferred language filter lang={hinted}")
+
+                result = self.agents["vector"].process_query(
+                    query,
+                    limit=limit,
+                    filters=filters,
+                    conversation_context=state.get("conversation_context"),
+                )
                 state['vector_result'] = result
                 logger.info("Vector Agent execution complete")
             else:
@@ -378,6 +416,22 @@ class MultiAgentOrchestrator:
             sql_result = state.get('sql_result')
             vector_result = state.get('vector_result')
 
+            # No agent ran (UNKNOWN route or empty agents list)
+            if not kg_result and not sql_result and not vector_result:
+                state['final_response'] = (
+                    "I couldn't determine how to answer that query. "
+                    "Try asking about artists, songs, genres, moods, or lyrics — for example:\n\n"
+                    "- \"Who are the top 10 most popular artists?\"\n"
+                    "- \"Find songs with sad lyrics\"\n"
+                    "- \"What genres does Radiohead play?\""
+                )
+                state['metadata'] = {
+                    'agents_used': [],
+                    'query_type': state.get('routing_info', {}).get('classification', {}).get('type', 'unknown'),
+                    'confidence': 0.0,
+                }
+                return state
+
             # KG-only: instant answer
             if kg_result and kg_result.get('success') and not vector_result and not sql_result:
                 state['final_response'] = kg_result['data']['answer']
@@ -407,14 +461,20 @@ class MultiAgentOrchestrator:
             # SQL + Vector (old hybrid path, LLM synthesis)
             elif sql_result and vector_result:
                 state['final_response'] = self._synthesize_hybrid_response(
-                    state['query'], sql_result, vector_result
+                    state['query'],
+                    sql_result,
+                    vector_result,
+                    conversation_context=state.get("conversation_context"),
                 )
 
             # KG failed, fall back to SQL agent
             elif kg_result and not kg_result.get('success') and not sql_result and not vector_result:
                 logger.warning("KG failed and no other agent ran -- attempting SQL fallback")
                 if 'sql' in self.agents:
-                    fb = self.agents['sql'].process_query(state['query'])
+                    fb = self.agents['sql'].process_query(
+                        state['query'],
+                        conversation_context=state.get("conversation_context"),
+                    )
                     if fb.get('success'):
                         state['final_response'] = fb['data']['answer']
                         state['sql_result'] = fb
@@ -439,6 +499,10 @@ class MultiAgentOrchestrator:
                 'query_type': state['routing_info']['classification']['type'],
                 'confidence': state['routing_info']['classification']['confidence'],
             }
+            vf = state.get("vector_result", {}) or {}
+            vmeta = vf.get("metadata") or {}
+            if vmeta.get("filters"):
+                state["metadata"]["vector_filters"] = vmeta["filters"]
 
             logger.info("Response synthesis complete")
 
@@ -459,15 +523,27 @@ class MultiAgentOrchestrator:
         return "\n".join(lines)
 
     def _synthesize_hybrid_response(
-        self, query: str, sql_result: Dict, vector_result: Dict
+        self,
+        query: str,
+        sql_result: Dict,
+        vector_result: Dict,
+        conversation_context: Optional[str] = None,
     ) -> str:
         try:
             sql_answer = sql_result.get('data', {}).get('answer', 'No SQL result')
             vector_answer = vector_result.get('data', {}).get('answer', 'No vector result')
 
+            prior = ""
+            if conversation_context and conversation_context.strip():
+                prior = f"""
+Prior conversation (for resolving follow-ups; do not invent facts not in SQL/vector results):
+{conversation_context.strip()}
+
+"""
+
             prompt = f"""You are a music information retrieval assistant for Music Maven, powered by the Music4All dataset.
 Synthesize the following results into a coherent, helpful response using PROPER MARKDOWN FORMATTING.
-
+{prior}
 User Query: {query}
 
 Structured Data Analysis (SQL):
@@ -500,7 +576,14 @@ Response:"""
 
     # ── public API ───────────────────────────────────────────────────────
 
-    def process_query(self, query: str) -> Dict[str, Any]:
+    def process_query(
+        self,
+        query: str,
+        max_results: int = 10,
+        lang_filter: Optional[str] = None,
+        use_kg: bool = True,
+        conversation_context: Optional[str] = None,
+    ) -> Dict[str, Any]:
         logger.info(f"Processing query through orchestrator: {query}")
 
         initial_state: AgentState = {
@@ -512,6 +595,10 @@ Response:"""
             'final_response': None,
             'error': None,
             'metadata': {},
+            'max_results': max(1, min(int(max_results), 100)),
+            'lang_filter': lang_filter,
+            'use_kg': bool(use_kg),
+            'conversation_context': (conversation_context or None),
         }
 
         try:
@@ -531,6 +618,9 @@ Response:"""
                 response['sql_result'] = final_state['sql_result']
             if final_state.get('vector_result'):
                 response['vector_result'] = final_state['vector_result']
+                vr = final_state['vector_result']
+                if vr.get('success') and vr.get('data', {}).get('results') is not None:
+                    response['results'] = vr['data']['results']
 
             logger.info("Query processing complete")
             return response

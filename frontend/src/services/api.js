@@ -40,12 +40,33 @@ export const apiService = {
     return response.data;
   },
 
-  // Process query
-  async processQuery(query, maxResults = 10) {
-    const response = await api.post('/query', {
+  // Process query (langFilter: ISO code e.g. en, pt — passed to vector Qdrant filter)
+  async processQuery(
+    query,
+    maxResults = 10,
+    langFilter = null,
+    useKG = true,
+    sessionId = null,
+    memoryOptions = {}
+  ) {
+    const body = {
       query,
       max_results: maxResults,
-    });
+      use_kg: useKG,
+    };
+    if (langFilter) {
+      body.lang_filter = langFilter;
+    }
+    if (sessionId) {
+      body.session_id = sessionId;
+      if (memoryOptions.memoryTurns != null) {
+        body.memory_turns = memoryOptions.memoryTurns;
+      }
+      if (memoryOptions.memoryMaxChars != null) {
+        body.memory_max_chars = memoryOptions.memoryMaxChars;
+      }
+    }
+    const response = await api.post('/query', body);
     return response.data;
   },
 
@@ -59,6 +80,15 @@ export const apiService = {
   async getExamples() {
     const response = await api.get('/examples');
     return response.data;
+  },
+
+  async clearConversation(sessionId) {
+    if (!sessionId) return;
+    try {
+      await api.delete(`/conversation/${encodeURIComponent(sessionId)}`);
+    } catch (e) {
+      console.warn('clearConversation failed', e);
+    }
   },
 };
 

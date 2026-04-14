@@ -169,9 +169,15 @@ class KGQueryEngine:
                 "artist_info",
                 self._resolve_artist_info,
             ),
-            # --- songs by artist ---
+            # --- average <feature> of <genre/artist> (must be before songs_by_artist) ---
             (
-                re.compile(r"songs?\s+(?:by|from|of)\s+(.+?)(?:\s+sorted|\s+ordered|\s+by\s+popularity)?$"),
+                re.compile(r"(?:average|avg|mean)\s+(\w+)\s+(?:of|for|in)\s+(.+?)(?:\s+songs?)?$"),
+                "average_feature",
+                self._resolve_average_feature,
+            ),
+            # --- songs by artist (skip if query asks for aggregates) ---
+            (
+                re.compile(r"(?!.*\b(?:average|avg|mean|total|count|sum|how many|number of)\b)songs?\s+(?:by|from|of)\s+(.+?)(?:\s+sorted|\s+ordered|\s+by\s+popularity)?$"),
                 "songs_by_artist",
                 self._resolve_songs_by_artist,
             ),
@@ -180,12 +186,6 @@ class KGQueryEngine:
                 re.compile(r"which\s+artists?\s+(?:has|have)\s+(?:the\s+)?most\s+songs?"),
                 "artists_by_song_count",
                 self._resolve_artists_by_song_count,
-            ),
-            # --- average <feature> of <genre/artist> ---
-            (
-                re.compile(r"(?:average|avg|mean)\s+(\w+)\s+(?:of|for|in)\s+(.+?)(?:\s+songs?)?$"),
-                "average_feature",
-                self._resolve_average_feature,
             ),
             # --- songs with <feature> above/below N ---
             (

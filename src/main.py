@@ -83,10 +83,23 @@ class MusicMavenApp:
             level="DEBUG",
         )
 
-    def query(self, query: str) -> dict:
+    def query(
+        self,
+        query: str,
+        max_results: int = 10,
+        lang_filter: Optional[str] = None,
+        use_kg: bool = True,
+        conversation_context: Optional[str] = None,
+    ) -> dict:
         logger.info(f"Processing query: {query}")
         try:
-            response = self.orchestrator.process_query(query)
+            response = self.orchestrator.process_query(
+                query,
+                max_results=max_results,
+                lang_filter=lang_filter,
+                use_kg=use_kg,
+                conversation_context=conversation_context,
+            )
             return response
         except Exception as e:
             logger.error(f"Query processing failed: {e}")
