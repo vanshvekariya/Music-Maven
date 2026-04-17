@@ -26,7 +26,7 @@
     "exclude": {
       "genres": [],
       "lang": [],
-      "artist": ["'Gorillaz'"],
+      "artist": ["Gorillaz"],
       "song": [],
       "album_name": [],
       "release": []
