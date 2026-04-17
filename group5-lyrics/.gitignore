@@ -9,3 +9,4 @@ models/
 *.pkl
 *.npy
 *.npz
+outputs/lyrics_preprocessed_with_genres.csv
