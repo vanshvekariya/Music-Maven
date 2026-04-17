@@ -17,7 +17,7 @@
   "constraints": {
     "include": {
       "genres": ["pop"],
-      "lang": ["'en'"],
+      "lang": ["en"],
       "artist": [],
       "song": [],
       "album_name": [],
@@ -26,7 +26,7 @@
     "exclude": {
       "genres": [],
       "lang": [],
-      "artist": ["'Gorillaz'"],
+      "artist": ["Gorillaz"],
       "song": [],
       "album_name": [],
       "release": []
