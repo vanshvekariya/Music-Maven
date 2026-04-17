@@ -1,0 +1,35 @@
+{
+  "k": 10,
+  "seed": {
+    "artist": "Gorillaz",
+    "song": "Feel Good Inc.",
+    "album_name": ""
+  },
+  "features": {
+    "popularity": 0,
+    "danceability": 1.0,
+    "energy": 1.0,
+    "key": 0,
+    "valence": 1.0,
+    "tempo": 0,
+    "duration_ms": 0
+  },
+  "constraints": {
+    "include": {
+      "genres": ["pop"],
+      "lang": ["'en'"],
+      "artist": [],
+      "song": [],
+      "album_name": [],
+      "release": [">= 2010 & <= 2020"]
+    },
+    "exclude": {
+      "genres": [],
+      "lang": [],
+      "artist": ["'Gorillaz'"],
+      "song": [],
+      "album_name": [],
+      "release": []
+    }
+  }
+}
