@@ -1,0 +1,238 @@
+Using device: cuda
+
+--- STAGE 1: Emotion Inference ---
+Loading emotion model and tokenizer for inference...
+Emotion Inference: 100%
+ 62/62 [00:41<00:00,  1.63it/s]
+Emotion probabilities saved to /content/drive/MyDrive/MusicMaven_Lyrics/MM_Lyrics_ETE/test_emotion.npy
+
+--- STAGE 2: Valence, Mood Mapping & Encoding ---
+Loading weights: 100%
+ 104/104 [00:00<00:00, 226.57it/s, Materializing param=pre_classifier.weight]
+Valence scores saved to /content/drive/MyDrive/MusicMaven_Lyrics/MM_Lyrics_ETE/test_valence.npy
+Mood labels saved to /content/drive/MyDrive/MusicMaven_Lyrics/MM_Lyrics_ETE/test_mood.npy
+Mood encoded labels saved to /content/drive/MyDrive/MusicMaven_Lyrics/MM_Lyrics_ETE/test_mood_encoded.npy
+
+--- STAGE 3: Merging all features ---
+Merged DataFrame saved to /content/drive/MyDrive/MusicMaven_Lyrics/MM_Lyrics_ETE/test_val_mod_merged.pkl
+
+--- STAGE 4: Generating Lyrics Embeddings ---
+Loading SBERT model and tokenizer...
+Computing SBERT embeddings for all lyrics...
+SBERT Embedding: 100%
+ 124/124 [00:52<00:00,  2.44it/s]
+Lyrics with embeddings saved to /content/drive/MyDrive/MusicMaven_Lyrics/MM_Lyrics_ETE/lyrics_with_embeddings.pkl
+
+--- STAGE 5: Initializing Hybrid Search ---
+Loading search models for interactive search...
+Loading weights: 100%
+ 103/103 [00:00<00:00, 456.72it/s, Materializing param=pooler.dense.weight]
+BertModel LOAD REPORT from: sentence-transformers/all-MiniLM-L6-v2
+ 104/104 [00:00<00:00, 395.51it/s, Materializing param=pre_classifier.weight]
+
+--- Starting Interactive Search ---
+Enter a lyrics snippet or emotion (e.g., 'I feel sad', 'love', 'The sun is shining')
+Type 'exit' or 'quit' to end the search.
+
+Enter your query: rainbows
+
+Top matches for 'rainbows':
+
+Song: rainbow-65-part-1-2 - gene-chandler
+Emotion: JOY (Valence: 1.00)
+Lyrics: rainbow part curtis mayfield gene chandler album live at the regal recorded at the regal theatre chicago collectables colcd transcriber awcantoraolcom...
+Match Score (Hybrid): 0.568
+Emotion Similarity (Dot Product): 0.855
+Emotion Similarity (Cosine): 0.995
+--------------------------------------------------
+Song: get-back-up-again - anna-kendrick
+Emotion: JOY (Valence: 1.00)
+Lyrics: i really hope i can do it cause theyre all depending on me i know that i must leave the only home ive ever known and brave the dangers of the forest s...
+Match Score (Hybrid): 0.551
+Emotion Similarity (Dot Product): 0.855
+Emotion Similarity (Cosine): 0.995
+--------------------------------------------------
+Song: glow-in-the-dark - carishma
+Emotion: JOY (Valence: 0.97)
+Lyrics: i made a wish and now i know where you are boy whoa oh oh oh whoa oh oh oh i think i found it youre my lucky star boy whoa oh oh oh whoa oh oh oh its ...
+Match Score (Hybrid): 0.538
+Emotion Similarity (Dot Product): 0.842
+Emotion Similarity (Cosine): 0.995
+--------------------------------------------------
+Song: today-will-be-a-good-day - dianne-reeves
+Emotion: JOY (Valence: 0.99)
+Lyrics: in the sweet light of the morning when the sun begins to rise i was awakened by some singing of birds just flying by now they was tellin one another t...
+Match Score (Hybrid): 0.526
+Emotion Similarity (Dot Product): 0.852
+Emotion Similarity (Cosine): 0.995
+--------------------------------------------------
+Song: sing-a-rainbow - cilla-black
+Emotion: JOY (Valence: 0.98)
+Lyrics: i can sing a rainbow red and yellow and pink and green orange and purple and blue i can sing a rainbow sing a rainbow sing a rainbow too listen with y...
+Match Score (Hybrid): 0.521
+Emotion Similarity (Dot Product): 0.846
+Emotion Similarity (Cosine): 0.995
+--------------------------------------------------
+
+Enter your query: i am hurting
+
+Top matches for 'i am hurting':
+
+Song: i-got-no-love - gloria-estefan
+Emotion: SADNESS (Valence: -1.00)
+Lyrics: i got no love in me guess whos to blame its a crying shame well its all because of you dont live a lie its true oh oh i got no love in me its a myster...
+Match Score (Hybrid): 0.634
+Emotion Similarity (Dot Product): 0.987
+Emotion Similarity (Cosine): 1.000
+--------------------------------------------------
+Song: a-fool-s-tears-english - big-bang
+Emotion: SADNESS (Valence: -1.00)
+Lyrics: girli feel so emptysince you left me wanna see your face my girl its like i dont even know how to explain you see im sayin cause im so hurt and so ang...
+Match Score (Hybrid): 0.632
+Emotion Similarity (Dot Product): 0.987
+Emotion Similarity (Cosine): 1.000
+--------------------------------------------------
+Song: think-about-me - artful-dodger
+Emotion: SADNESS (Valence: -1.00)
+Lyrics: did you think that you could turn away from the love i gave did i really hear you say its over baby you found another lady after everything i did for ...
+Match Score (Hybrid): 0.629
+Emotion Similarity (Dot Product): 0.987
+Emotion Similarity (Cosine): 1.000
+--------------------------------------------------
+Song: pieces-of-a-broken-man - andre-nickatina
+Emotion: SADNESS (Valence: -1.00)
+Lyrics: pieces of a broken man andre nickatina i got a habit like a crazy lady ive been an addict since the late s i got tha soul of a crack baby i get materi...
+Match Score (Hybrid): 0.623
+Emotion Similarity (Dot Product): 0.979
+Emotion Similarity (Cosine): 1.000
+--------------------------------------------------
+Song: ageless-medley - amy-grant
+Emotion: SADNESS (Valence: -1.00)
+Lyrics: are you living in an old mans rubble listening to the father of lies if you are then youre headed for trouble listen too long youll eventually die too...
+Match Score (Hybrid): 0.622
+Emotion Similarity (Dot Product): 0.986
+Emotion Similarity (Cosine): 1.000
+--------------------------------------------------
+
+Enter your query: why did you lie to me 
+
+Top matches for 'why did you lie to me':
+
+Song: change-it-all-back - eminem
+Emotion: ANGER (Valence: -0.80)
+Lyrics: yo yo this switchb aka flip representin the tut n this here our love song check it out switchb yo if i could start from scratch id change most of it i...
+Match Score (Hybrid): 0.603
+Emotion Similarity (Dot Product): 0.979
+Emotion Similarity (Cosine): 1.000
+--------------------------------------------------
+Song: y-u-mad - birdman
+Emotion: ANGER (Valence: -0.80)
+Lyrics: i am the female weezy this shit is easy pull up in that new new bitch get a squeegee yeah my flow sick yeah my flow queasy haha they were sleeping on ...
+Match Score (Hybrid): 0.602
+Emotion Similarity (Dot Product): 0.984
+Emotion Similarity (Cosine): 1.000
+--------------------------------------------------
+Song: you-don-t-you-won-t - billy-gilman
+Emotion: ANGER (Valence: -0.80)
+Lyrics: you dont you wont no way i say you didnt you doesnt you isnt you wasnt you wouldnt you couldnt you oughnt you shouldnt love nobody but me youre mine n...
+Match Score (Hybrid): 0.602
+Emotion Similarity (Dot Product): 0.983
+Emotion Similarity (Cosine): 1.000
+--------------------------------------------------
+Song: my - future
+Emotion: ANGER (Valence: -0.80)
+Lyrics: i be on the phone with doe boy i be telling him he inspired me to go harder know what im saying real talk my savages my savages my savages im always d...
+Match Score (Hybrid): 0.597
+Emotion Similarity (Dot Product): 0.979
+Emotion Similarity (Cosine): 1.000
+--------------------------------------------------
+Song: roller-disco - goldie-lookin-chain
+Emotion: ANGER (Valence: -0.80)
+Lyrics: hey the first time that i met my mate was in the roller rink where i went to skate it was early in the decade around back then maskells was the place ...
+Match Score (Hybrid): 0.596
+Emotion Similarity (Dot Product): 0.980
+Emotion Similarity (Cosine): 1.000
+--------------------------------------------------
+
+Enter your query: being with you is home 
+
+Top matches for 'being with you is home':
+
+Song: it-s-a-great-day-to-be-a-guy-parody-it-s-a-great-day-to-be-alive-travis-tritt - cledus-t-judd
+Emotion: JOY (Valence: 0.99)
+Lyrics: you know im really gonna miss you sugar britches im gonna miss you too bub now im only gonna be gone a few days but now there is a few things i need y...
+Match Score (Hybrid): 0.582
+Emotion Similarity (Dot Product): 0.886
+Emotion Similarity (Cosine): 0.997
+--------------------------------------------------
+Song: after-the-afterparty - charli-xcx
+Emotion: JOY (Valence: 1.00)
+Lyrics: after the after the party were gonna keep it going were gonna rip it up the neighbours might complain i think its almost am but baby im still feeling ...
+Match Score (Hybrid): 0.569
+Emotion Similarity (Dot Product): 0.890
+Emotion Similarity (Cosine): 0.997
+--------------------------------------------------
+Song: t-v-is-the-thing-this-year - dinah-washington
+Emotion: JOY (Valence: 1.00)
+Lyrics: if you want to have fun come home with me you can stay all night and play with my tv tv is the thing this year this year tv is the thing this year rad...
+Match Score (Hybrid): 0.567
+Emotion Similarity (Dot Product): 0.889
+Emotion Similarity (Cosine): 0.997
+--------------------------------------------------
+Song: get-lucky - daughter
+Emotion: JOY (Valence: 0.98)
+Lyrics: like the legend of the phoenix all ends with beginnings what keeps the planet spinning the force of love beginning oh we come too far to give up who w...
+Match Score (Hybrid): 0.561
+Emotion Similarity (Dot Product): 0.881
+Emotion Similarity (Cosine): 0.998
+--------------------------------------------------
+Song: that-s-all-mine - asher-roth
+Emotion: JOY (Valence: 1.00)
+Lyrics: jesse boykins iii can take it all from me so i know you want to see can take it all from me so i know you want to see can take it all from me so i kno...
+Match Score (Hybrid): 0.556
+Emotion Similarity (Dot Product): 0.889
+Emotion Similarity (Cosine): 0.997
+--------------------------------------------------
+
+Enter your query: can i just love you 
+
+Top matches for 'can i just love you':
+
+Song: girlfriend - bobby-brown
+Emotion: LOVE (Valence: 0.90)
+Lyrics: i remember the very first time you the picture of love in my heart you and me girl holding hands please be my lady wont you understand i need a girlfr...
+Match Score (Hybrid): 0.582
+Emotion Similarity (Dot Product): 0.789
+Emotion Similarity (Cosine): 0.971
+--------------------------------------------------
+Song: champs-elysees-theme - bob-sinclar
+Emotion: LOVE (Valence: 0.85)
+Lyrics: oh darlin could you love me tonight oh darlin let me hold you tight starlight star bright could you love me tonight could you love me could you love m...
+Match Score (Hybrid): 0.576
+Emotion Similarity (Dot Product): 0.748
+Emotion Similarity (Cosine): 0.979
+--------------------------------------------------
+Song: stay-with-me - brick-lace
+Emotion: LOVE (Valence: 0.90)
+Lyrics: background lets go you know it come onyo come on come on nyanda brick and lace come on first production ya du kno put em up rolling tongue chorus stay...
+Match Score (Hybrid): 0.563
+Emotion Similarity (Dot Product): 0.789
+Emotion Similarity (Cosine): 0.971
+--------------------------------------------------
+Song: as - george-michael
+Emotion: LOVE (Valence: 0.89)
+Lyrics: as around the sun the earth knows shes revolving and the rosebuds know to bloom in early may just as hate knows loves the cure you can rest your mind ...
+Match Score (Hybrid): 0.563
+Emotion Similarity (Dot Product): 0.788
+Emotion Similarity (Cosine): 0.971
+--------------------------------------------------
+Song: love-overboard - gladys-knight-and-the-pips
+Emotion: LOVE (Valence: 0.89)
+Lyrics: they tell me gladys you know you love too hard but i tell em not nearly hard enough they say girlfriend you know you go too far around the world aint ...
+Match Score (Hybrid): 0.562
+Emotion Similarity (Dot Product): 0.787
+Emotion Similarity (Cosine): 0.971
+--------------------------------------------------
+
+Enter your query: exit
+Exiting interactive search.

@@ -1,0 +1,17 @@
+# Core Data Handling
+pandas
+numpy
+scipy
+
+# Machine Learning & Optimization
+scikit-learn
+lightgbm
+
+# Deep Learning & Transformers
+torch
+transformers
+sentence-transformers
+
+# Utilities & Progress Tracking
+tqdm
+pickle5; python_version < '3.8'

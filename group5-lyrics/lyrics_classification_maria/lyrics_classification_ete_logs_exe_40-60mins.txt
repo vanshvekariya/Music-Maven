@@ -1,0 +1,218 @@
+All necessary libraries imported.
+Project path set to: /content/drive/MyDrive/MusicMaven_Lyrics/MM_Lyrics_ETE/
+Train shape: (290183, 5)
+Test shape: (7935, 6)
+Cleaning complete and files saved.
+Columns ['Artist', 'Song', 'Genre', 'Language', 'Lyrics', 'lyrics_clean']
+Columns ['Song', 'Song year', 'Artist', 'Genre', 'Lyrics', 'Track_id', 'lyrics_clean']
+Loading cleaned datasets...
+Datasets loaded successfully.
+Train shape: (290183, 6)
+Test shape: (7935, 7)
+Merged genre datasets saved!
+Train genre distribution after merge:
+Genre_merged
+Rock        141695
+Pop         113720
+Acoustic     18983
+Jazz         13545
+Hip-Hop       2240
+Name: count, dtype: int64
+Label encoding completed.
+Classes: ['Acoustic' 'Hip-Hop' 'Jazz' 'Pop' 'Rock']
+Labels saved!
+Label encoder saved!
+Starting TF-IDF vectorization...
+Train TF-IDF shape: (290183, 10000)
+Test TF-IDF shape: (7935, 10000)
+TF-IDF vectorizer saved!
+TF-IDF matrices saved!
+Checking GPU availability...
+GPU available: True
+Loading SBERT model... (chunk logs removed)
+Encoding train chunk 280000 -> 290183
+Batches: 100%
+ 40/40 [00:32<00:00,  2.01it/s]
+Train SBERT shape: (290183, 384)
+Train embeddings saved!
+
+Encoding test set...
+Batches: 100%
+ 31/31 [00:25<00:00,  1.85it/s]
+Test SBERT shape: (7935, 384)
+Test embeddings saved!
+
+SBERT embeddings extraction completed successfully.
+Starting style feature extraction...
+Train style features shape: (290183, 6)
+Test style features shape: (7935, 6)
+Style features saved successfully!
+Loading saved features...
+All features loaded.
+Combined TF-IDF + SBERT + Style features saved (pre-reduction).
+Combined feature shapes:
+Train: (290183, 10390)
+Test: (7935, 10390)
+Applying TruncatedSVD with 300 components...
+Reduced feature shapes:
+Train: (290183, 300)
+Test: (7935, 300)
+TruncatedSVD reduced features saved successfully!
+
+Training Linear SVC...
+Training time for Linear SVC: 185.66 seconds
+
+Linear SVC Results:
+Accuracy: 0.4500315059861374
+Weighted F1-score: 0.41789923518522015
+
+Classification Report:
+               precision    recall  f1-score   support
+
+    Acoustic       0.59      0.10      0.18      1815
+     Hip-Hop       0.80      0.50      0.61       960
+        Jazz       0.28      0.48      0.35       660
+         Pop       0.48      0.37      0.42      2280
+        Rock       0.43      0.79      0.55      2220
+
+    accuracy                           0.45      7935
+   macro avg       0.51      0.45      0.42      7935
+weighted avg       0.51      0.45      0.42      7935
+
+Linear SVC model saved to /content/drive/MyDrive/MusicMaven_Lyrics/MM_Lyrics_ETE/linear_svc_model.pkl!
+
+Training SGD Linear SVC...
+Training time for SGD Linear SVC: 461.22 seconds
+
+SGD Linear SVC Results:
+Accuracy: 0.38487712665406426
+Weighted F1-score: 0.3233717825577961
+
+Classification Report:
+               precision    recall  f1-score   support
+
+    Acoustic       0.44      0.00      0.00      1815
+     Hip-Hop       0.82      0.17      0.28       960
+        Jazz       0.35      0.26      0.30       660
+         Pop       0.34      0.60      0.43      2280
+        Rock       0.42      0.61      0.49      2220
+
+    accuracy                           0.38      7935
+   macro avg       0.47      0.33      0.30      7935
+weighted avg       0.44      0.38      0.32      7935
+
+SGD Linear SVC model saved to /content/drive/MyDrive/MusicMaven_Lyrics/MM_Lyrics_ETE/sgd_linear_svc_model.pkl!
+
+Training Fast LightGBM classifier...
+Training time for Fast LightGBM: 82.51 seconds
+/usr/local/lib/python3.12/dist-packages/sklearn/utils/validation.py:2739: UserWarning: X does not have valid feature names, but LGBMClassifier was fitted with feature names
+  warnings.warn(
+
+Fast LightGBM Results:
+Accuracy: 0.4976685570258349
+Weighted F1-score: 0.49634379329202716
+
+Classification Report:
+               precision    recall  f1-score   support
+
+    Acoustic       0.47      0.48      0.48      1815
+     Hip-Hop       0.84      0.60      0.70       960
+        Jazz       0.34      0.50      0.40       660
+         Pop       0.52      0.33      0.41      2280
+        Rock       0.47      0.63      0.54      2220
+
+    accuracy                           0.50      7935
+   macro avg       0.53      0.51      0.51      7935
+weighted avg       0.52      0.50      0.50      7935
+
+Fast LightGBM model saved to /content/drive/MyDrive/MusicMaven_Lyrics/MM_Lyrics_ETE/lightgbm_fast_model.pkl!
+Loading SBERT model for semantic search...
+SBERT model loaded!
+Loading saved SBERT embeddings and metadata...
+Loaded 290183 songs for search.
+
+Top 10 results for query: 'love and heartbreak'
+
+suleiman, ady - my love (interlude) [Indie] (score: 0.570)
+fleetwood mac - although the sun is shining [Rock] (score: 0.554)
+bang tango - just for you [Rock] (score: 0.553)
+neil young - when your lonely heart breaks [Rock] (score: 0.553)
+death in june - but what ends when the symbols shatter [Folk] (score: 0.552)
+ferlin husky - love is the sweetest thing [Country] (score: 0.551)
+michael buble - you always hurt the one you love [Pop] (score: 0.540)
+the temptations - love is a hurtin' thing [Pop] (score: 0.537)
+don williams - the rose [Rock] (score: 0.537)
+yuridia - rose [Pop] (score: 0.536)
+
+Top 5 results for query: 'blue skies'
+
+marina lima - blue skies [Rock] (score: 0.650)
+helen merrill - blue skies [Jazz] (score: 0.645)
+pete seeger - blue skies [Folk] (score: 0.636)
+willie nelson - blue skies [Rock] (score: 0.630)
+ella fitzgerald - blue skies [Jazz] (score: 0.618)
+
+Top 5 results for query: 'upbeat party song'
+
+alabama - gonna have a party [#] [Rock] (score: 0.587)
+dusty springfield - i wanna make you happy [Folk] (score: 0.582)
+dj bobo - let the party begin [Pop] (score: 0.577)
+duran duran - secret oktober [Rock] (score: 0.558)
+duran duran - secret oktober [Rock] (score: 0.558)
+
+
+
+Starting interactive semantic lyrics search. Type 'exit' to quit.
+
+Enter your search query (or 'exit' to quit): party songs 
+
+Top 5 results for query: 'party songs '
+
+alabama - gonna have a party [#] [Rock] (score: 0.617)
+the pointer sisters - having a party [Pop] (score: 0.608)
+supremes - havin' a party [Pop] (score: 0.602)
+lmfao - rock the beat [Pop] (score: 0.568)
+lmfao - rock the beat [Pop] (score: 0.568)
+
+Enter your search query (or 'exit' to quit): romantic upbeat
+
+Top 5 results for query: 'romantic upbeat'
+
+ella fitzgerald - rhythm and romance [Jazz] (score: 0.597)
+ella fitzgerald - rhythm & romance [Jazz] (score: 0.597)
+cocteau twins - spooning good singing gum [Rock] (score: 0.572)
+fred astaire - a fine romance [Jazz] (score: 0.565)
+barbra streisand - love dance [Rock] (score: 0.560)
+
+Enter your search query (or 'exit' to quit): musical
+
+Top 5 results for query: 'musical'
+
+santana - la fuente del ritmo [Rock] (score: 1.000)
+therion - the fall into eclipse [Metal] (score: 0.695)
+scalene - interlúdio [Rock] (score: 0.635)
+santana - mr. szabo [Rock] (score: 0.635)
+santana - ah, sweet dancer [Rock] (score: 0.635)
+
+Enter your search query (or 'exit' to quit): drunk in love
+
+Top 5 results for query: 'drunk in love'
+
+george jones - tennessee whiskey [Rock] (score: 0.546)
+pet shop boys - you only tell me you love me when you're drunk [Pop] (score: 0.543)
+jake owen - when you love someone [Rock] (score: 0.536)
+brett eldredge - drunk on your love [Country] (score: 0.534)
+david allan coe - tennessee whiskey [Rock] (score: 0.526)
+
+Enter your search query (or 'exit' to quit): blues
+
+Top 5 results for query: 'blues'
+
+chuck berry - everyday i have the blues [Rock] (score: 0.585)
+berry, chuck - every day i have the blues [Rock] (score: 0.585)
+chuck berry - every day i have the blues [Rock] (score: 0.585)
+the tragically hip - springtime in vienna [Indie] (score: 0.583)
+diana ross - lady sings the blues [Rock] (score: 0.579)
+
+Enter your search query (or 'exit' to quit): exit
+Exiting interactive search.
