@@ -1,6 +1,6 @@
 # Music Maven (G5) - Project Proposal
 
-# Lyrics Classification & Search Module 
+# Lyrics Classification & Search Module - Update from Maria and Evidence completed in github>Music-Maven repo on 4/17/2026. 
 
 # Scope:
 
